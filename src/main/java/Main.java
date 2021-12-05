@@ -22,7 +22,6 @@ public class Main {
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class Main {
 
     public static void main(String[] args) {
@@ -31,7 +30,7 @@ public class Main {
             config.addStaticFiles("/sub", Location.CLASSPATH);}
         	//config.addStaticFiles(staticFiles -> {staticFiles.directory = "/";});}
         //).start(getHerokuAssignedPort());
-        ).start(2008);
+        ).start(1004);
         
         app.post("/gotoregister", ctx -> {
             ctx.render("/sub/register.html");
@@ -39,8 +38,10 @@ public class Main {
         
         app.post("/register", ctx -> {
         	//have SQL queries for inputting user data into database
-            ctx.html(ctx.formParam("fname"));
-            ctx.render("/sub/home.html");
+            User curUser = new User(ctx.formParam("fname"), ctx.formParam("lname"), Integer.parseInt(ctx.formParam("contactn")), 
+            		Integer.parseInt(ctx.formParam("creditcard")), Integer.parseInt(ctx.formParam("cvv")), ctx.formParam("exp"), ctx.formParam("email"), ctx.formParam("password"));
+            //ctx.render("/sub/home.html");
+            ctx.html(curUser.getFullName());
         });
         
         app.post("/gotologin", ctx -> {

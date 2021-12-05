@@ -1,33 +1,10 @@
-<h1>Upload example</h1>
-<form method="post" action="/upload-example" enctype="multipart/form-data">
-    <input type="file" name="files" multiple>
-    <button>Submit</button>
+<h1>Welcome to the Airplane ticket reservation system!</h1>
+<form method="post" action="/gotoregister">
+  <button>Create Account</button>
 </form>
-
-<h2>Make reservation:</h2>
-<form method="post" action="/make-reservation">
-    Choose day
-    <select name="day">
-        <option value="saturday">Saturday</option>
-        <option value="sunday">Sunday</option>
-    </select>
-    <br>
-    Choose time
-    <select name="time">
-        <option value="8:00 PM">8:00 PM</option>
-        <option value="9:00 PM">9:00 PM</option>
-    </select>
-    <br>
-    <button>Submit</button>
+<form method="post" action="/gotologin">
+  <button>Login</button>
 </form>
-
-<h2>Check your reservation:</h2>
-<form method="get" action="/check-reservation">
-    Choose day
-    <select name="day">
-        <option value="saturday">Saturday</option>
-        <option value="sunday">Sunday</option>
-    </select>
-    <br>
-    <button>Submit</button>
+<form method="post" action="/logout">
+  <button>Logout</button>
 </form>

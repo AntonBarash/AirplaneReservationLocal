@@ -1,27 +1,32 @@
 
 The following files have been resolved:
    org.eclipse.jetty:jetty-server:jar:9.4.43.v20210629:compile
+   org.javassist:javassist:jar:3.20.0-GA:compile
+   org.eclipse.jetty:jetty-servlet:jar:9.4.43.v20210629:compile
+   org.eclipse.jetty:jetty-xml:jar:9.4.43.v20210629:compile
+   org.eclipse.jetty.websocket:websocket-api:jar:9.4.43.v20210629:compile
+   org.eclipse.jetty:jetty-security:jar:9.4.43.v20210629:compile
+   org.attoparser:attoparser:jar:2.0.5.RELEASE:compile
+   org.eclipse.jetty.websocket:websocket-servlet:jar:9.4.43.v20210629:compile
+   org.jetbrains.kotlin:kotlin-stdlib:jar:1.5.30:compile
+   org.unbescape:unbescape:jar:1.1.6.RELEASE:compile
+   org.eclipse.jetty.websocket:websocket-client:jar:9.4.43.v20210629:compile
+   org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar:1.5.30:compile
+   io.javalin:javalin:jar:4.0.0:compile
+   org.slf4j:slf4j-api:jar:1.7.31:compile
    org.eclipse.jetty:jetty-webapp:jar:9.4.43.v20210629:compile
    org.slf4j:slf4j-simple:jar:1.7.32:compile
    javax.servlet:javax.servlet-api:jar:3.1.0:compile
    org.jetbrains.kotlin:kotlin-stdlib-common:jar:1.5.30:compile
-   org.eclipse.jetty:jetty-servlet:jar:9.4.43.v20210629:compile
    org.eclipse.jetty.websocket:websocket-common:jar:9.4.43.v20210629:compile
-   org.eclipse.jetty:jetty-xml:jar:9.4.43.v20210629:compile
-   org.eclipse.jetty.websocket:websocket-api:jar:9.4.43.v20210629:compile
    org.eclipse.jetty:jetty-http:jar:9.4.43.v20210629:compile
-   org.eclipse.jetty:jetty-security:jar:9.4.43.v20210629:compile
+   ognl:ognl:jar:3.1.26:compile
    org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar:1.5.30:compile
    org.eclipse.jetty:jetty-client:jar:9.4.43.v20210629:compile
-   org.eclipse.jetty.websocket:websocket-servlet:jar:9.4.43.v20210629:compile
+   org.thymeleaf:thymeleaf:jar:3.0.12.RELEASE:compile
    org.eclipse.jetty.websocket:websocket-server:jar:9.4.43.v20210629:compile
    org.eclipse.jetty:jetty-util:jar:9.4.43.v20210629:compile
    org.eclipse.jetty:jetty-io:jar:9.4.43.v20210629:compile
-   org.jetbrains.kotlin:kotlin-stdlib:jar:1.5.30:compile
-   org.eclipse.jetty.websocket:websocket-client:jar:9.4.43.v20210629:compile
-   org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar:1.5.30:compile
-   io.javalin:javalin:jar:4.0.0:compile
    org.eclipse.jetty:jetty-util-ajax:jar:9.4.43.v20210629:compile
-   org.slf4j:slf4j-api:jar:1.7.31:compile
    org.jetbrains:annotations:jar:13.0:compile
 
