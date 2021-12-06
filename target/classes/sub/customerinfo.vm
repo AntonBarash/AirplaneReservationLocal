@@ -1,0 +1,29 @@
+<h2>Customer Information</h2>
+<form method="post" action="/searchcustomer">
+	<label for="cemail">Search by customer email:</label>
+	<input type="email" name="cemail" />
+	<input type="submit" value="Search" />
+</form>
+
+{% if cinfo %}
+  <ul>
+    {% for cust in cinfo %}
+      <li>Customer Name: {{cust[0]}} {{cust[1]}}</li><br>
+      <li>Customer Email: {{cust[2]}} {{cust[1]}}</li><br>
+      <li>Contact Number: {{cust[3]}}</li><br>
+      <li>Credit Card Number: {{cust[4]}} Exp: {{cust[5]}} CVV: {{cust[6]}}</li><br>
+      <li>Password: {{cust[6]}}</li><br>
+    {% endfor %}
+  </ul>
+{% endif %}
+<br>
+{% if flights %}
+  Here is a list of the current customer's flights:
+  <ul>
+    {% for flight in flights %}
+    {% endfor %}
+  </ul>
+{% endif %}
+{% if none %}
+  This customer has no history of flights!
+{% endif %}

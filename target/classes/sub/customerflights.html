@@ -1,0 +1,17 @@
+{% if flights %}
+  Here is a list your flights:
+  <ul>
+    {% for flight in flights %}
+      <li>
+        From {{flight[0]}} to {{flight[1]}}<br>
+        Departure day: {{flight[2}}<br>
+        Departure time: {{flight[3]}}<br>
+        Estimated arrival time: {{flight[4]}}<br>
+        Seat Number: {{flight[5]}}
+      </li><br>
+    {% endfor %}
+  </ul>
+{% endif %}
+{% if none %}
+  You have yet to book a single flight!
+{% endif %}

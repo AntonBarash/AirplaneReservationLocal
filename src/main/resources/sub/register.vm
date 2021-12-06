@@ -1,3 +1,8 @@
+#if($usedemail)
+ <h1>An account with that email already exists, please create an account with a new email, or log into an account with
+ that one</h1>
+#end
+
 <head>
   <title>Create an account!</title>
 </head>
