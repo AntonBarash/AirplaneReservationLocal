@@ -19,10 +19,12 @@
       <form method="post" action="/bookflight">
         <label for="fid"></label>
         <input type="hidden" name="fid" value=$stack.add($flight[7]) />
-	      <input type="submit" value="Book this flight" />
+	<input type="submit" value="Book this flight" />
         <br>
       </form>
       #end
     </li>
   #end
 </ul>
+
+<p>Back to <a href='/customer'>homepage</a></p>
