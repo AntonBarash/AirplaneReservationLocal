@@ -7,10 +7,11 @@ Here is a list your flights:
       <h4>Departure time: $flight[3]</h4><br>
       <h4>Estimated arrival time: $flight[4]</h4><br>
       <h4>Seat Number: $flight[5]</h4>
+      <h4>Price: $flight[6]</h4><br>
       #if ($user.cancelflight($flight[2], $flight[3]))
         <form method="post" action="/customercancel">
           <label for="fid"></label>
-	  <input type="hidden" name="fid" value=$stack.add($flight[6]) />
+	  <input type="hidden" name="fid" value=$stack.add($flight[7]) />
 	  <input type="submit" value="Cancel this flight" />
           <br>
         </form>
