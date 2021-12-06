@@ -23,7 +23,7 @@ Here is a list of the current customer's flights:
       <h4>Departure time: $flight[3]</h4><br>
       <h4>Estimated arrival time: $flight[4]</h4><br>
       <h4>Seat Number: $flight[5]</h4>
-      <form method="post" action="/cancel">
+      <form method="post" action="/admincancel">
         <label for="fid"></label>
 	<input type="hidden" name="fid" value=$stack.add($flight[6]) />
 	<input type="submit" value="Cancel this flight" />
