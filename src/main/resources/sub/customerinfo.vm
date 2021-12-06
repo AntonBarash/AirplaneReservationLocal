@@ -12,8 +12,8 @@
 </ul>
 
 <ul>
-  <h3>Customer Name: $cust[0] {{cust[1]}}</h3><br>
-  <h5>Customer Email: $cust[2] {{cust[1]}}</h5><br>
+  <h3>Customer Name: $cust[0] $cust[1]</h3><br>
+  <h5>Customer Email: $cust[2]</h5><br>
   <h5>Contact Number: $cust[3]</h5><br>
   <h5>Credit Card Number: $cust[4] Exp: $cust[5] CVV: $cust[6]</h5><br>
   <h5>Password: $cust[6]</h5><br>
