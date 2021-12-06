@@ -39,7 +39,7 @@
       <h4>Price: $flight[6]</h4><br>
       <form method="post" action="/removeflight">
         <label for="fid"></label>
-        <input type="hidden" name="fid" value=$stack.add($flight[7]) />
+        <input type="hidden" name="fid" value=$flight[7] />
 	<input type="submit" value="Remove this flight" />
         <br>
       </form>
