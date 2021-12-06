@@ -26,7 +26,7 @@ Here is a list of the current customer's flights:
       #if ($user.cancelflight($flight[2], $flight[3]))
         <form method="post" action="/customercancel">
           <label for="fid"></label>
-	  <input type="hidden" name="fid" value=$stack.add($flight[7]) />
+	  <input type="hidden" name="fid" value=$flight[7] />
 	  <input type="submit" value="Cancel this flight" />
           <br>
         </form>
