@@ -32,3 +32,5 @@ Here is a list of the current customer's flights:
     </li>
   #end
 </ul>
+
+<p>Back to <a href='/admin'>home page</a></p>
