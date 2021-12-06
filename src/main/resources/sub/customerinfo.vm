@@ -11,7 +11,6 @@
   <h5>Contact Number: $cust[3]</h5><br>
   <h5>Credit Card Number: $cust[4] Exp: $cust[5] CVV: $cust[6]</h5><br>
   <h5>Password: $cust[6]</h5><br>
-  #end
 </ul>
 <br>
 Here is a list of the current customer's flights:
