@@ -18,6 +18,7 @@ creditcardn INTEGER,
 ccv INTEGER,
 email VARCHAR(255),
 pass VARCHAR(255),
+account_type INTEGER,
 customer_id INTEGER AUTO_INCREMENT,
 PRIMARY KEY(customer_id));
 
@@ -33,8 +34,8 @@ INSERT INTO Flight(destination_loc,departing_loc,date,total_seats,price) values(
 INSERT INTO Flight(destination_loc,departing_loc,date,total_seats,price) values('Boston', 'Philadelphia', 01012001, 4, 2);
 INSERT INTO Flight(destination_loc,departing_loc,date,total_seats,price) values('Boston', 'Toronto', 01012001, 3, 3);
 
-INSERT INTO Customer(fname,lname,contactn,creditcardn,ccv,email,pass) values('a','a',1,1,1,'a@a','a');
-INSERT INTO Customer(fname,lname,contactn,creditcardn,ccv,email,pass) values('b','b',1,1,1,'b@b','b');
+INSERT INTO Customer(fname,lname,contactn,creditcardn,ccv,email,pass,account_type) values('a','a',1,1,1,'a@a','a',0);
+INSERT INTO Customer(fname,lname,contactn,creditcardn,ccv,email,pass,account_type) values('b','b',1,1,1,'b@b','b',1);
 INSERT INTO Books(customer_id, flight_id, seatn) values(1, 1, 1);
 
 SELECT * FROM Customer;

@@ -31,7 +31,7 @@ public class Main {
             config.addStaticFiles("/sub", Location.CLASSPATH);}
         	//config.addStaticFiles(staticFiles -> {staticFiles.directory = "/";});}
         //).start(getHerokuAssignedPort()); //FOR HEROKU DEPLOYMENT
-        ).start(1016); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
+        ).start(1003); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
         
         //mysql connection
         Connection con=DriverManager.getConnection(  
@@ -60,12 +60,12 @@ public class Main {
         		int contactn = Integer.parseInt(ctx.formParam("contactn"));
         		int ccnum = Integer.parseInt(ctx.formParam("creditcard"));
         		int ccv = Integer.parseInt(ctx.formParam("cvv"));
-        		String exp = ctx.formParam("exp");
+        		//String exp = ctx.formParam("exp");
         		String pass = ctx.formParam("password");
-        		curUser = new User(fname, lname, contactn, ccnum, ccv, exp, email, pass);
+        		curUser = new User(fname, lname, contactn, ccnum, ccv, email, pass);
         		//stmt = con.createStatement(); PRETTY SURE I DONT NEED THIS LINE, ONE STATEMENT CREATION IS ENOUGH
-        		String inputquery = String.format("INSERT INTO Customer(fname,lname,contactn,creditcardn,ccv,email,pass) values('%s','%s',%d,%d,%d,'%s','%s')", 
-        				fname,lname,contactn,ccnum,ccv,email,pass);
+        		String inputquery = String.format("INSERT INTO Customer(fname,lname,contactn,creditcardn,ccv,email,pass,account_type) values('%s','%s',%d,%d,%d,'%s','%s',%d)", 
+        				fname,lname,contactn,ccnum,ccv,email,pass,0);
         		stmt.executeUpdate(inputquery);
         		ctx.render("/sub/customer.html");
         	} 
@@ -109,7 +109,22 @@ public class Main {
             	String pass = ctx.formParam("password");
             	String correctpass = rs.getString("pass");
             	if (pass.equals(correctpass)) {
-            		ctx.render("/sub/customer.html");
+            		int accounttype = rs.getInt("account_type");
+            		if (accounttype == 0) {
+            			String fname = rs.getString("fname");
+            			String lname = rs.getString("lname");
+            			int contactn = rs.getInt("contactn");
+            			int ccnum = rs.getInt("creditcardn");
+            			int ccv = rs.getInt("ccv");
+            			curUser = new User(fname, lname, contactn, ccnum, ccv, email, pass);
+            			ctx.render("/sub/customer.html");
+            		}
+            		else {
+            			String fname = rs.getString("fname");
+            			String lname = rs.getString("lname");
+            			curUser = new User(fname, lname, email, pass);
+            			ctx.render("/sub/admin.html");
+            		}
             	}
             	else {
             		Map<String, Integer> nothispass = new HashMap<String, Integer>() {{
@@ -128,10 +143,7 @@ public class Main {
         
         app.get("/logout", ctx -> {
         	curUser = new User();
-        	Map<String, String> loggedin = new HashMap<String, String>() {{
-                put("logout", "true");
-            }};
-            ctx.render("/sub/index.html",loggedin);
+            ctx.render("/sub/index.html");
         });
         
         app.get("/flightinfo", ctx -> {

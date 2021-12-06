@@ -1,3 +1,5 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 public class User {
 	private String fname;
@@ -5,7 +7,6 @@ public class User {
 	private int contactn;
 	private int creditcardnum;
 	private int cvv;
-	private String exp;
 	private String email;
 	private String pass;
 	private String userType;
@@ -18,23 +19,30 @@ public class User {
 		this.contactn = 0;
 		this.creditcardnum = 0;
 		this.cvv = 0;
-		this.exp = null;
 		this.email = null;
 		this.pass = null;
 		this.userType = null;
 	}
 	
-	public User(String first, String last, int contact, int ccnum, int crvv, String expd, String emai, String pas) {
+	public User(String first, String last, int contact, int ccnum, int crv, String emai, String pas) {
 		this.loggedIn = true;
 		this.fname = first;
 		this.lname = last;
 		this.contactn = contact;
 		this.creditcardnum = ccnum;
-		this.cvv = crvv;
-		this.exp = expd;
+		this.cvv = crv;
 		this.email = emai;
 		this.pass = pas;
 		this.userType = "user";
+	}
+	
+	public User(String first, String last, String emai, String pas) {
+		this.loggedIn = true;
+		this.fname = first;
+		this.lname = last;
+		this.email = emai;
+		this.pass = pas;
+		this.userType = "admin";
 	}
 	
 	public String getFullName() {
