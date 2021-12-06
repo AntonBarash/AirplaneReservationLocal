@@ -6,12 +6,6 @@
 </form>
 
 <ul>
-  #foreach($listItem in $listItems)
-   <li>$listItem</li><br>
-  #end
-</ul>
-
-<ul>
   <h3>Customer Name: $cust[0] $cust[1]</h3><br>
   <h5>Customer Email: $cust[2]</h5><br>
   <h5>Contact Number: $cust[3]</h5><br>
