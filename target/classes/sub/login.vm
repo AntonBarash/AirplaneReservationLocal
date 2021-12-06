@@ -1,3 +1,11 @@
+#if($wrongemail)
+ <h1>There is no account with that email, either create an account with it or login using an email that exists</h1>
+#end
+
+#if($wrongpass)
+ <h1>The account with this email has a different password than the one you put in!</h1>
+#end
+
 <h2>Login using your email and password!</h2>
 
 <body>

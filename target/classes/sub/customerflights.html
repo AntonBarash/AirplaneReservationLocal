@@ -1,17 +1,22 @@
-{% if flights %}
-  Here is a list your flights:
-  <ul>
-    {% for flight in flights %}
-      <li>
-        From {{flight[0]}} to {{flight[1]}}<br>
-        Departure day: {{flight[2}}<br>
-        Departure time: {{flight[3]}}<br>
-        Estimated arrival time: {{flight[4]}}<br>
-        Seat Number: {{flight[5]}}
-      </li><br>
-    {% endfor %}
-  </ul>
-{% endif %}
-{% if none %}
-  You have yet to book a single flight!
-{% endif %}
+Here is a list your flights:
+<ul>
+  #foreach($flight in $flights)
+    <li>
+      <h4>From $flight[0] to $flight[1]</h4><br>
+      <h4>Departure day: $flight[2]</h4><br>
+      <h4>Departure time: $flight[3]</h4><br>
+      <h4>Estimated arrival time: $flight[4]</h4><br>
+      <h4>Seat Number: $flight[5]</h4>
+      #if ($user.cancelflight($flight[2], $flight[3]))
+        <form method="post" action="/customercancel">
+          <label for="fid"></label>
+	  <input type="hidden" name="fid" value=$stack.add($flight[6]) />
+	  <input type="submit" value="Cancel this flight" />
+          <br>
+        </form>
+      #end
+    </li>
+  #end
+</ul>
+
+<p>Back to <a href='/customer'>homepage</a></p>

@@ -31,7 +31,7 @@ public class Main {
             config.addStaticFiles("/sub", Location.CLASSPATH);}
         	//config.addStaticFiles(staticFiles -> {staticFiles.directory = "/";});}
         //).start(getHerokuAssignedPort()); //FOR HEROKU DEPLOYMENT
-        ).start(1014); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
+        ).start(1016); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
         
         //mysql connection
         Connection con=DriverManager.getConnection(  
@@ -97,12 +97,33 @@ public class Main {
         });
         
         app.get("/login", ctx -> {
-            ctx.render("/sub/login.html");
+            ctx.render("/sub/login.vm");
         });
         
         app.post("/login", ctx -> {
         	//have SQL queries for checking login information, then check if admin or user account, depending on that, go to diff html page
-            ctx.render("/sub/customer.html");
+        	String email = ctx.formParam("email");
+        	Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM Customer WHERE email = '" + email + "'");
+            if (rs.next()) {
+            	String pass = ctx.formParam("password");
+            	String correctpass = rs.getString("pass");
+            	if (pass.equals(correctpass)) {
+            		ctx.render("/sub/customer.html");
+            	}
+            	else {
+            		Map<String, Integer> nothispass = new HashMap<String, Integer>() {{
+                        put("wrongpass", 1);
+            		}};
+            		ctx.render("/sub/login.vm",nothispass);
+            	}
+        	}
+        	else {
+        		Map<String, Integer> nothisemail = new HashMap<String, Integer>() {{
+                    put("wrongemail", 1);
+        		}};
+        		ctx.render("/sub/login.vm",nothisemail);
+        	}
         });
         
         app.get("/logout", ctx -> {

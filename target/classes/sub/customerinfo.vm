@@ -5,25 +5,33 @@
 	<input type="submit" value="Search" />
 </form>
 
-{% if cinfo %}
-  <ul>
-    {% for cust in cinfo %}
-      <li>Customer Name: {{cust[0]}} {{cust[1]}}</li><br>
-      <li>Customer Email: {{cust[2]}} {{cust[1]}}</li><br>
-      <li>Contact Number: {{cust[3]}}</li><br>
-      <li>Credit Card Number: {{cust[4]}} Exp: {{cust[5]}} CVV: {{cust[6]}}</li><br>
-      <li>Password: {{cust[6]}}</li><br>
-    {% endfor %}
-  </ul>
-{% endif %}
+<ul>
+  <h3>Customer Name: $cust[0] $cust[1]</h3><br>
+  <h5>Customer Email: $cust[2]</h5><br>
+  <h5>Contact Number: $cust[3]</h5><br>
+  <h5>Credit Card Number: $cust[4] Exp: $cust[5] CVV: $cust[6]</h5><br>
+  <h5>Password: $cust[6]</h5><br>
+</ul>
 <br>
-{% if flights %}
-  Here is a list of the current customer's flights:
-  <ul>
-    {% for flight in flights %}
-    {% endfor %}
-  </ul>
-{% endif %}
-{% if none %}
-  This customer has no history of flights!
-{% endif %}
+Here is a list of the current customer's flights:
+<ul>
+  #foreach($flight in $flights)
+    <li>
+      <h4>From $flight[0] to $flight[1]</h4><br>
+      <h4>Departure day: $flight[2]</h4><br>
+      <h4>Departure time: $flight[3]</h4><br>
+      <h4>Estimated arrival time: $flight[4]</h4><br>
+      <h4>Seat Number: $flight[5]</h4><br>
+      #if ($user.cancelflight($flight[2], $flight[3]))
+        <form method="post" action="/customercancel">
+          <label for="fid"></label>
+	  <input type="hidden" name="fid" value=$stack.add($flight[6]) />
+	  <input type="submit" value="Cancel this flight" />
+          <br>
+        </form>
+      #end
+    </li>
+  #end
+</ul>
+
+<p>Back to <a href='/admin'>homepage</a></p>
