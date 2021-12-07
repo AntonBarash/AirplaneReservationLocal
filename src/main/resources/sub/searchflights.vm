@@ -9,7 +9,6 @@
    <input type="destination" name="destination" required/><br>
    <input type="submit" value="Search" />
  </form>
- <br>
 
 <ul>
   #foreach($flight in $flights)
