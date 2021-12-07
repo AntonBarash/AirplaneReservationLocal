@@ -23,7 +23,7 @@
         Departure time: $flight.getTime()<br>
         Seats Number: $flight.getSeat()<br>
         Price: $flight.getPrice()<br>
-        <form method="post" action="/customercancel">
+        <form method="post" action="/admincancel">
           <label for="fid"></label>
 	  <input type="hidden" name="start" $flight.getStart() />
 	  <input type="hidden" name="dest" value=$flight.getDest() />
