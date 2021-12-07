@@ -63,7 +63,7 @@ public class Flight {
     	return id;
     }
 
-    public boolean isValid() {
+    public boolean isValidDate() {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm");
@@ -81,5 +81,9 @@ public class Flight {
         } catch (ParseException e) {
             return false;
         }
+    }
+    
+    public boolean isValidSeat() {
+    	return seatnum > 0;
     }
 }

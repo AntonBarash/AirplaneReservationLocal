@@ -33,7 +33,7 @@ public class Main {
             config.addStaticFiles("/sub", Location.CLASSPATH);}
         	//config.addStaticFiles(staticFiles -> {staticFiles.directory = "/";});}
         //).start(getHerokuAssignedPort()); //FOR HEROKU DEPLOYMENT
-        ).start(1035); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
+        ).start(1038); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
         
         //mysql connection
         //Class.forName("com.mysql.cj.jdbc.Driver");
@@ -41,9 +41,9 @@ public class Main {
     	Connection con = DriverManager.getConnection(dbUrl);
         //Connection con = DriverManager.getConnection(dbUrl, "b6e662acb93d8f", "1a653a5a");
         
-        Statement stmt1 = con.createStatement();
-        ResultSet rs1 = stmt1.executeQuery("SELECT 1");
-        ResultSet rs2 = stmt1.executeQuery("SELECT 1");
+        //Statement stmt1 = con.createStatement();
+        //ResultSet rs1 = stmt1.executeQuery("SELECT 1");
+        //ResultSet rs2 = stmt1.executeQuery("SELECT 1");
         //Connection con=DriverManager.getConnection(  			THIS IS THE LOCAL DATABASE CONNECTION
         //	"jdbc:mysql://localhost:3306/AirplaneRes","root","romepage");
         	
@@ -81,7 +81,8 @@ public class Main {
                 int id = rs.getInt("customer_id");
         		curUser = new User(fname, lname, contactn, ccnum, ccv, exp, email, pass, id);
         		//stmt = con.createStatement(); PRETTY SURE I DONT NEED THIS LINE, ONE STATEMENT CREATION IS ENOUGH
-        		
+        		rs.close();
+        		stmt.close();
         		ctx.render("/sub/customer.html");
         	} 
         });
@@ -147,12 +148,16 @@ public class Main {
             				Flight f = new Flight(s, dest, date, time, sn, p, id);
             				userFlights.add(f);
             			}
+            			rs.close();
+                		stmt.close();
             			ctx.render("/sub/customer.html");
             		}
             		else {
             			String fname = rs.getString("fname");
             			String lname = rs.getString("lname");
             			Admin curAdmin = new Admin(email,pass);
+            			rs.close();
+                		stmt.close();
             			ctx.render("/sub/admin.html");
             		}
             	}
@@ -160,6 +165,8 @@ public class Main {
             		Map<String, Integer> nothispass = new HashMap<String, Integer>() {{
                         put("wrongpass", 1);
             		}};
+            		rs.close();
+            		stmt.close();
             		ctx.render("/sub/login.vm",nothispass);
             	}
         	}
@@ -167,6 +174,8 @@ public class Main {
         		Map<String, Integer> nothisemail = new HashMap<String, Integer>() {{
                     put("wrongemail", 1);
         		}};
+        		rs.close();
+        		stmt.close();
         		ctx.render("/sub/login.vm",nothisemail);
         	}
         });
@@ -195,13 +204,15 @@ public class Main {
 				int sn = rs.getInt("total_seats");
 				int p = rs.getInt("price");
 				Flight f = new Flight(s, dest, date, time, sn, p, id);
-				if (f.isValid()) {
+				if (f.isValidDate() && f.isValidSeat()) {
 					flights.add(f);
 				}
         	}
         	Map<String, ArrayList<Flight>> allflights = new HashMap<String, ArrayList<Flight>>() {{
                 put("flights",flights);
     		}};
+    		rs.close();
+    		stmt.close();
             ctx.render("/sub/searchflights.vm",allflights);
         });
         
@@ -229,6 +240,7 @@ public class Main {
         	Map<String, Integer> booked = new HashMap<String, Integer>() {{
                 put("booked",1);
     		}};
+    		stmt.close();
             ctx.render("/sub/searchflights.vm",booked);
         });
     }
@@ -253,6 +265,8 @@ public class Main {
     		}
     		emptyseat += 1;
     	}
+    	rs.close();
+		stmt.close();
     	return emptyseat;
     }
 }

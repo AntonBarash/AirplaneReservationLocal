@@ -1,4 +1,6 @@
 use heroku_50d2532af7614cd;
+SET @@auto_increment_increment=1;
+ALTER TABLE Customer AUTO_INCREMENT = 1;
 DROP TABLE Books;
 DROP TABLE Flight;
 DROP TABLE Customer;
@@ -42,5 +44,7 @@ INSERT INTO Customer(fname, lname, contactn, creditcardn, ccv, exp, email, pass,
 SELECT * FROM Flight;
 
 SELECT * FROM Customer;
+
+SELECT Auto_increment FROM information_schema.tables WHERE table_name='Customer';
 
 SELECT * FROM Books;
