@@ -1,5 +1,11 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
+import io.javalin.http.Context;
 
 public class User {
 	private String fname;
@@ -73,5 +79,59 @@ public class User {
 	
 	public boolean isLoggedIn() {
 		return loggedIn;
+	}
+	
+	public static ArrayList<Flight> viewFlights(Context ctx, Connection con) throws SQLException {
+		String dest = ctx.formParam("destination");
+    	String flightsquery = "SELECT * FROM Flight WHERE destination_loc = '" + dest + "'";
+    	Statement stmt = con.createStatement();
+    	ResultSet rs = stmt.executeQuery(flightsquery);
+		ArrayList<Flight> flights = new ArrayList<Flight>();
+		while (rs.next()) {
+    		String s = rs.getString("departing_loc");
+			String date = rs.getString("date");
+			String time = rs.getString("time");
+			int id = rs.getInt("flight_id");
+			int sn = rs.getInt("total_seats");
+			int p = rs.getInt("price");
+			Flight f = new Flight(s, dest, date, time, sn, p, id);
+			if (f.isValidDate() && f.isValidSeat()) {
+				flights.add(f);
+			}
+    	}
+		rs.close();
+		stmt.close();
+		return flights;
+	}
+	
+	public static Flight bookFlight(Context ctx, Connection con, User curUser) throws SQLException {
+		int flight_id = Integer.parseInt(ctx.formParam("fid"));
+    	int seat_no = Main.getSeatNumber(flight_id,con);
+    	String inputquery = String.format("INSERT INTO Books(customer_id, flight_id, seatn) values(%d,%d,%d)",curUser.getId(),flight_id,seat_no);
+    	Statement stmt = con.createStatement();
+    	stmt.executeUpdate(inputquery);
+    	String s = ctx.formParam("start");
+		String dest = ctx.formParam("dest");
+		String date = ctx.formParam("date");
+		String time = ctx.formParam("time");
+		int p = Integer.parseInt(ctx.formParam("price"));
+		Flight f = new Flight(s, dest, date, time, seat_no, p, flight_id);
+		String updatequery = "UPDATE Flight SET total_seats = total_seats - 1 WHERE flight_id = " + flight_id;
+		stmt.executeUpdate(updatequery);
+		stmt.close();
+		return f;
+	}
+	
+	public static int cancelFlight(Context ctx, Connection con, User curUser) throws SQLException {
+		int flight_id = Integer.parseInt(ctx.formParam("fid"));
+    	int seat_no = Integer.parseInt(ctx.formParam("seat"));
+    	int index = Integer.parseInt(ctx.formParam("index")) - 1;
+    	String deletequery = String.format("DELETE FROM Books WHERE flight_id = %d AND customer_id = %d AND seatn = %d",flight_id,curUser.getId(),seat_no);
+    	Statement stmt = con.createStatement();
+    	stmt.executeUpdate(deletequery);
+		String updatequery = "UPDATE Flight SET total_seats = total_seats + 1 WHERE flight_id = " + flight_id;
+		stmt.executeUpdate(updatequery);
+		stmt.close();
+		return index;
 	}
 }

@@ -33,7 +33,7 @@ public class Main {
             config.addStaticFiles("/sub", Location.CLASSPATH);}
         	//config.addStaticFiles(staticFiles -> {staticFiles.directory = "/";});}
         //).start(getHerokuAssignedPort()); //FOR HEROKU DEPLOYMENT
-        ).start(1001); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
+        ).start(1007); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
         
         //mysql connection
         //Class.forName("com.mysql.cj.jdbc.Driver");
@@ -173,28 +173,10 @@ public class Main {
         });
         
         app.post("/searchflights", ctx -> {
-        	String dest = ctx.formParam("destination");
-        	String flightsquery = "SELECT * FROM Flight WHERE destination_loc = '" + dest + "'";
-        	Statement stmt = con.createStatement();
-        	ResultSet rs = stmt.executeQuery(flightsquery);
-        	ArrayList<Flight> flights = new ArrayList<Flight>();
-        	while (rs.next()) {
-        		String s = rs.getString("departing_loc");
-				String date = rs.getString("date");
-				String time = rs.getString("time");
-				int id = rs.getInt("flight_id");
-				int sn = rs.getInt("total_seats");
-				int p = rs.getInt("price");
-				Flight f = new Flight(s, dest, date, time, sn, p, id);
-				if (f.isValidDate() && f.isValidSeat()) {
-					flights.add(f);
-				}
-        	}
+        	ArrayList<Flight> flights = User.viewFlights(ctx,con);
         	Map<String, ArrayList<Flight>> allflights = new HashMap<String, ArrayList<Flight>>() {{
                 put("flights",flights);
     		}};
-    		rs.close();
-    		stmt.close();
             ctx.render("/sub/searchflights.vm",allflights);
         });
         
@@ -216,42 +198,22 @@ public class Main {
         });
         
         app.post("/bookflight", ctx -> {
-        	int flight_id = Integer.parseInt(ctx.formParam("fid"));
-        	int seat_no = getSeatNumber(flight_id,con);
-        	String inputquery = String.format("INSERT INTO Books(customer_id, flight_id, seatn) values(%d,%d,%d)",curUser.getId(),flight_id,seat_no);
-        	Statement stmt = con.createStatement();
-        	stmt.executeUpdate(inputquery);
-        	String s = ctx.formParam("departing_loc");
-			String dest = ctx.formParam("destination_loc");
-			String date = ctx.formParam("date");
-			String time = ctx.formParam("time");
-			int p = Integer.parseInt(ctx.formParam("price"));
-			Flight f = new Flight(s, dest, date, time, seat_no, p, flight_id);
-			userFlights.add(f);
-			String updatequery = "UPDATE Flight SET total_seats = total_seats - 1 WHERE flight_id = " + flight_id;
-			stmt.executeUpdate(updatequery);
+        	Flight f = User.bookFlight(ctx, con, curUser);
+        	System.out.println(f.getStart());
+        	userFlights.add(f);
         	Map<String, Integer> booked = new HashMap<String, Integer>() {{
                 put("booked",1);
     		}};
-    		stmt.close();
             ctx.render("/sub/searchflights.vm",booked);
         });
         
         app.post("/customercancel", ctx -> {
-        	int flight_id = Integer.parseInt(ctx.formParam("fid"));
-        	int seat_no = Integer.parseInt(ctx.formParam("seat"));
-        	int index = Integer.parseInt(ctx.formParam("index")) - 1;
-        	String deletequery = String.format("DELETE FROM Books WHERE flight_id = %d AND customer_id = %d AND seatn = %d",flight_id,curUser.getId(),seat_no);
-        	Statement stmt = con.createStatement();
-        	stmt.executeUpdate(deletequery);
+        	int index = User.cancelFlight(ctx, con, curUser);
         	userFlights.remove(index);
-			String updatequery = "UPDATE Flight SET total_seats = total_seats + 1 WHERE flight_id = " + flight_id;
-			stmt.executeUpdate(updatequery);
         	Map<String, Object> canceled = new HashMap<String, Object>() {{
                 put("canceled",1);
                 put("flights",userFlights);
     		}};
-    		stmt.close();
             ctx.render("/sub/customerflights.vm",canceled);
         });
         
@@ -381,7 +343,7 @@ public class Main {
         return 1000;
     }
     
-    private static int getSeatNumber(int flight_id, Connection con) throws SQLException {
+    public static int getSeatNumber(int flight_id, Connection con) throws SQLException {
     	String getseat = String.format("SELECT * from Books WHERE flight_id = %d ORDER BY seatn",flight_id);
     	Statement stmt = con.createStatement();
     	ResultSet rs = stmt.executeQuery(getseat);

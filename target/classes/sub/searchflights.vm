@@ -20,7 +20,7 @@
       Price: $flight.getPrice()<br>
       <form method="post" action="/bookflight">
         <label for="fid"></label>
-	<input type="hidden" name="start" $flight.getStart() />
+	<input type="hidden" name="start" value=$flight.getStart() />
 	<input type="hidden" name="dest" value=$flight.getDest() />
 	<input type="hidden" name="date" value=$flight.getDate() />
 	<input type="hidden" name="time" value=$flight.getTime() />
