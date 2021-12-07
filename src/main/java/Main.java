@@ -33,7 +33,7 @@ public class Main {
             config.addStaticFiles("/sub", Location.CLASSPATH);}
         	//config.addStaticFiles(staticFiles -> {staticFiles.directory = "/";});}
         //).start(getHerokuAssignedPort()); //FOR HEROKU DEPLOYMENT
-        ).start(1038); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
+        ).start(1046); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
         
         //mysql connection
         //Class.forName("com.mysql.cj.jdbc.Driver");
@@ -183,6 +183,7 @@ public class Main {
         app.get("/logout", ctx -> {
         	curUser = new User();
         	curAdmin = new Admin();
+        	userFlights = new ArrayList<Flight>();
             ctx.render("/sub/index.html");
         });
         
@@ -220,6 +221,17 @@ public class Main {
             ctx.render("/sub/customer.html");
         });
         
+        app.get("/customer", ctx -> {
+            ctx.render("/sub/customer.html");
+        });
+        
+        app.get("/customerflights", ctx -> {
+        	Map<String, ArrayList<Flight>> booked = new HashMap<String, ArrayList<Flight>>() {{
+                put("flights",userFlights);
+    		}};
+            ctx.render("/sub/customerflights.vm",booked);
+        });
+        
         app.post("/bookflight", ctx -> {
         	int flight_id = Integer.parseInt(ctx.formParam("fid"));
         	int seat_no = getSeatNumber(flight_id,con);
@@ -242,6 +254,24 @@ public class Main {
     		}};
     		stmt.close();
             ctx.render("/sub/searchflights.vm",booked);
+        });
+        
+        app.post("/customercancel", ctx -> {
+        	int flight_id = Integer.parseInt(ctx.formParam("fid"));
+        	int seat_no = Integer.parseInt(ctx.formParam("seat"));
+        	int index = Integer.parseInt(ctx.formParam("index")) - 1;
+        	String deletequery = String.format("DELETE FROM Books WHERE flight_id = %d AND customer_id = %d AND seatn = %d",flight_id,curUser.getId(),seat_no);
+        	Statement stmt = con.createStatement();
+        	stmt.executeUpdate(deletequery);
+        	userFlights.remove(index);
+			String updatequery = "UPDATE Flight SET total_seats = total_seats + 1 WHERE flight_id = " + flight_id;
+			stmt.executeUpdate(updatequery);
+        	Map<String, Object> canceled = new HashMap<String, Object>() {{
+                put("canceled",1);
+                put("flights",userFlights);
+    		}};
+    		stmt.close();
+            ctx.render("/sub/customerflights.vm",canceled);
         });
     }
     
