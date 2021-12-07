@@ -1,0 +1,29 @@
+#if($canceled)
+  <h1>Successfully canceled flight!</h1>
+#end
+
+Here is a list your flights:
+<ul>
+  #foreach($flight in $flights)
+    <li>
+      From $flight.getStart() to $flight.getDest()<br>
+      Departure day: $flight.getDate()<br>
+      Departure time: $flight.getTime()<br>
+      Seats Number: $flight.getSeat()<br>
+      Price: $flight.getPrice()<br>
+      <form method="post" action="/customercancel">
+        <label for="fid"></label>
+	<input type="hidden" name="start" $flight.getStart() />
+	<input type="hidden" name="dest" value=$flight.getDest() />
+	<input type="hidden" name="date" value=$flight.getDate() />
+	<input type="hidden" name="time" value=$flight.getTime() />
+	<input type="hidden" name="price" value=$flight.getPrice() />
+        <input type="hidden" name="fid" value=$flight.getId() />
+	<input type="submit" value="Cancel this flight" />
+        <br>
+      </form>
+    </li>
+  #end
+</ul>
+
+<p>Back to <a href='/customer'>homepage</a></p>
