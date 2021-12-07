@@ -36,6 +36,8 @@ seatn INTEGER,
 FOREIGN KEY (customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE,
 FOREIGN KEY (flight_id) REFERENCES Flight(flight_id) ON DELETE CASCADE,
 PRIMARY KEY(customer_id, flight_id, seatn));
+INSERT INTO Customer(fname, lname, contactn, creditcardn, ccv, exp, email, pass, account_type) values('admin','admin',1111111111,1,111,1111,'admin@admin','cs411',1);
+
 
 INSERT INTO Flight(time,destination_loc,departing_loc,date,total_seats,price) values('01:01', 'Boston', 'Chicago', '2022-01-01', 5, 1);
 INSERT INTO Flight(time,destination_loc,departing_loc,date,total_seats,price) values('01:01', 'Boston', 'Philadelphia', '2022-01-01', 4, 2);
@@ -45,7 +47,7 @@ INSERT INTO Flight(time,destination_loc,departing_loc,date,total_seats,price) va
 
 INSERT INTO Customer(fname, lname, contactn, creditcardn, ccv, exp, email, pass, account_type) values('a','a',1111111111,1,1,1,'a@a','a',0);
 
-INSERT INTO Customer(fname, lname, contactn, creditcardn, ccv, exp, email, pass, account_type) values('admin','admin',1111111111,1,111,1111,'admin@admin','cs411',1);
+
 
 INSERT INTO Books(customer_id, flight_id, seatn) values(1,45,1);
 

@@ -14,21 +14,15 @@ public class Main {
         Javalin app = Javalin.create(config -> {
             config.addStaticFiles("/sub", Location.CLASSPATH);}
         //).start(getHerokuAssignedPort()); //FOR HEROKU DEPLOYMENT
-        ).start(1000); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
+        ).start(1001); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
         
         //mysql connection
-        String dbUrl = "jdbc:mysql://us-cdbr-east-04.cleardb.com/heroku_50d2532af7614cd?password=1a653a5a&reconnect=true&user=b6e662acb93d8f";
-    	//Connection con = DriverManager.getConnection(dbUrl);
+        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/AirplaneRes","root","romepage"); //LOCALHOST CONNECTION
         
-        //Statement stmt1 = con.createStatement();
-        //ResultSet rs1 = stmt1.executeQuery("SELECT 1");
-        //ResultSet rs2 = stmt1.executeQuery("SELECT 1");
-    	
-    	
-        //Connection con=DriverManager.getConnection(  	   //THIS IS THE LOCAL DATABASE CONNECTION, not needed anymore since remote database
-        //	"jdbc:mysql://localhost:3306/AirplaneRes","root","romepage"); // is hosted on heroku and can be used
-        
-    	
+        //HEROKU CLEARDB CONNECTION, IS SLOW AND CAN CRASH (UNCOMMENT BOTH OF NEXT LINES):
+        //String dbUrl = "jdbc:mysql://us-cdbr-east-04.cleardb.com/heroku_50d2532af7614cd?password=1a653a5a&reconnect=true&user=b6e662acb93d8f";
+        //Connection con = DriverManager.getConnection(dbUrl);
+            	
     	//get action for register: displays the register page
         app.get("/register", ctx -> {
         	ctx.render("/sub/register.vm");
@@ -37,7 +31,7 @@ public class Main {
         //post action for register: creates an account, using the input in the register form
         app.post("/register", ctx -> {
         	String email = ctx.formParam("email");
-        	Connection con = DriverManager.getConnection(dbUrl);
+        	//Connection con = DriverManager.getConnection(dbUrl);
         	Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM Customer WHERE email = '" + email + "'");
         	if (rs.next()) { //if account with this email has already been made
@@ -46,7 +40,7 @@ public class Main {
         		}};
         		rs.close();
         		stmt.close();
-        		con.close();
+        		//con.close();
         		ctx.render("/sub/register.vm",alreadyusedemail);
         	}
         	else {
@@ -66,15 +60,15 @@ public class Main {
         		curUser = new User(fname, lname, contactn, ccnum, ccv, exp, email, pass, id);
         		rs.close();
         		stmt.close();
-        		con.close();
+        		//con.close();
         		ctx.render("/sub/customer.html");
         	} 
         });
 
         //get action for login: goes to login page
         app.get("/login", ctx -> {
-        	Connection con = DriverManager.getConnection(dbUrl);
-        	con.close();
+        	//Connection con = DriverManager.getConnection(dbUrl);
+        	//con.close();
             ctx.render("/sub/login.vm");
         });
         
@@ -82,7 +76,7 @@ public class Main {
         //post action for login: logs in based on email and password, or outputs message about wrong login info
         app.post("/login", ctx -> {
         	String email = ctx.formParam("email");
-        	Connection con = DriverManager.getConnection(dbUrl);
+        	//Connection con = DriverManager.getConnection(dbUrl);
         	Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM Customer WHERE email = '" + email + "'");
             if (rs.next()) { //if this is true, that means there is an account with this email, so you check password
@@ -114,7 +108,7 @@ public class Main {
             			}
             			rs.close();
                 		stmt.close();
-                		con.close();
+                		//con.close();
             			ctx.render("/sub/customer.html");
             		}
             		else { //if accounttype is 1, you go to admin page since 1 is for admin accounts
@@ -123,7 +117,7 @@ public class Main {
             			Admin curAdmin = new Admin(email,pass);
             			rs.close();
                 		stmt.close();
-                		con.close();
+                		//con.close();
             			ctx.render("/sub/admin.html");
             		}
             	}
@@ -133,7 +127,7 @@ public class Main {
             		}};
             		rs.close();
             		stmt.close();
-            		con.close();
+            		//con.close();
             		ctx.render("/sub/login.vm",nothispass);
             	}
         	}
@@ -143,7 +137,7 @@ public class Main {
         		}};
         		rs.close();
         		stmt.close();
-        		con.close();
+        		//con.close();
         		ctx.render("/sub/login.vm",nothisemail);
         	}
         });
@@ -163,12 +157,12 @@ public class Main {
         
        //post action for searchflights: based on user input of destination, show all flights with that destination
         app.post("/searchflights", ctx -> {
-        	Connection con = DriverManager.getConnection(dbUrl);
+        	//Connection con = DriverManager.getConnection(dbUrl);
         	ArrayList<Flight> flights = User.viewFlights(ctx,con);
         	Map<String, ArrayList<Flight>> allflights = new HashMap<String, ArrayList<Flight>>() {{
                 put("flights",flights);
     		}};
-    		con.close();
+    		//con.close();
             ctx.render("/sub/searchflights.vm",allflights);
         });
         
@@ -196,26 +190,26 @@ public class Main {
         
         //post action for bookflight: books a flight that the user has picked, adding it to the user's userflight list
         app.post("/bookflight", ctx -> {
-        	Connection con = DriverManager.getConnection(dbUrl);
+        	//Connection con = DriverManager.getConnection(dbUrl);
         	Flight f = User.bookFlight(ctx, con, curUser);
         	userFlights.add(f);
         	Map<String, Integer> booked = new HashMap<String, Integer>() {{
                 put("booked",1);
     		}};
-    		con.close();
+    		//con.close();
             ctx.render("/sub/searchflights.vm",booked);
         });
         
         //post action for customercancel: cancels a flight the user has chosen to cancel, removing it from their userflight list
         app.post("/customercancel", ctx -> {
-        	Connection con = DriverManager.getConnection(dbUrl);
+        	//Connection con = DriverManager.getConnection(dbUrl);
         	int index = User.cancelFlight(ctx, con, curUser);
         	userFlights.remove(index);
         	Map<String, Object> canceled = new HashMap<String, Object>() {{
                 put("canceled",1);
                 put("flights",userFlights);
     		}};
-    		con.close();
+    		//con.close();
             ctx.render("/sub/customerflights.vm",canceled);
         });
         
@@ -226,20 +220,20 @@ public class Main {
         
         //post action for searchcustomer: shows all information about the user and their flights that the admin has searched for
         app.post("/searchcustomer", ctx -> {
-        	Connection con = DriverManager.getConnection(dbUrl);
+        	//Connection con = DriverManager.getConnection(dbUrl);
         	curUser = Admin.searchCustomer(ctx, con);
         	userFlights = Admin.searchCustomerFlights(ctx, con, curUser);
 			Map<String, Object> userinfo = new HashMap<String, Object>() {{
                 put("cust",curUser);
                 put("flights",userFlights);
     		}};
-    		con.close();
+    		//con.close();
             ctx.render("/sub/customerinfo.vm",userinfo);
         });
         
         //post action for admincancel: cancels a flight for a specific user
         app.post("/admincancel", ctx -> {
-        	Connection con = DriverManager.getConnection(dbUrl);
+        	//Connection con = DriverManager.getConnection(dbUrl);
         	int index = Admin.cancelFlight(ctx, con, curUser);
         	userFlights.remove(index);    		
     		Map<String, Object> userinfo = new HashMap<String, Object>() {{
@@ -247,7 +241,7 @@ public class Main {
                 put("flights",userFlights);
                 put("canceled",1);
     		}};
-    		con.close();
+    		//con.close();
             ctx.render("/sub/customerinfo.vm",userinfo);
         });
         
@@ -258,31 +252,31 @@ public class Main {
         
         //post action for makenewflight: makes a new flight with the information the admin has input into the form
         app.post("/makenewflight", ctx -> {
-        	Connection con = DriverManager.getConnection(dbUrl);
+        	//Connection con = DriverManager.getConnection(dbUrl);
 			Admin.addFlight(ctx, con);
-			con.close();
+			//con.close();
             ctx.render("/sub/adminflights.vm");
         });
         
         //post action for adminviewflights: lets the admin view all of the flights for the destination that they put in
         app.post("/adminviewflights", ctx -> {
-        	Connection con = DriverManager.getConnection(dbUrl);
+        	//Connection con = DriverManager.getConnection(dbUrl);
         	ArrayList<Flight> flights = Admin.viewFlights(ctx, con);
         	Map<String, ArrayList<Flight>> allflights = new HashMap<String, ArrayList<Flight>>() {{
                 put("flights",flights);
     		}};
-    		con.close();
+    		//con.close();
             ctx.render("/sub/adminflights.vm",allflights);
         });
         
         //post action for removeflight: removes the flight the admin has selected to remove
         app.post("/removeflight", ctx -> {
-        	Connection con = DriverManager.getConnection(dbUrl);
+        	//Connection con = DriverManager.getConnection(dbUrl);
         	Admin.removeFlight(ctx,con);
         	Map<String, Integer> removed = new HashMap<String, Integer>() {{
                 put("removed",1);
     		}};
-    		con.close();
+    		//con.close();
             ctx.render("/sub/adminflights.vm",removed);
         });
         
