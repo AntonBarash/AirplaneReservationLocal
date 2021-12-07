@@ -1,5 +1,3 @@
-drop database AirplaneRes;
-create database AirplaneRes;
 use heroku_50d2532af7614cd;
 DROP TABLE Books;
 DROP TABLE Flight;
@@ -35,13 +33,10 @@ FOREIGN KEY (customer_id) REFERENCES Customer(customer_id),
 FOREIGN KEY (flight_id) REFERENCES Flight(flight_id),
 PRIMARY KEY(customer_id, flight_id));
 
-INSERT INTO Flight(destination_loc,departing_loc,date,total_seats,price) values('Boston', 'Chicago', 01012001,5, 1);
-INSERT INTO Flight(destination_loc,departing_loc,date,total_seats,price) values('Boston', 'Philadelphia', 01012001, 4, 2);
-INSERT INTO Flight(destination_loc,departing_loc,date,total_seats,price) values('Boston', 'Toronto', 01012001, 3, 3);
+INSERT INTO Flight(time,destination_loc,departing_loc,date,total_seats,price) values('01:01', 'Boston', 'Chicago', '2022-01-01', 5, 1);
+INSERT INTO Flight(time,destination_loc,departing_loc,date,total_seats,price) values('01:01', 'Boston', 'Philadelphia', '2022-01-01', 4, 2);
+INSERT INTO Flight(time,destination_loc,departing_loc,date,total_seats,price) values('01:01', 'Boston', 'Toronto', '2022-01-01', 3, 3);
 
-INSERT INTO Customer(fname,lname,contactn,creditcardn,ccv,email,pass,account_type) values('a','a',1,1,1,'a@a','a',0);
-INSERT INTO Customer(fname,lname,contactn,creditcardn,ccv,email,pass,account_type) values('b','b',1,1,1,'b@b','b',1);
-INSERT INTO Books(customer_id, flight_id, seatn) values(1, 1, 1);
+SELECT * FROM Flight;
 
 SELECT * FROM Customer;
-SELECT * FROM Books WHERE customer_id = '';

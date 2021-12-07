@@ -32,8 +32,8 @@ public class Main {
         Javalin app = Javalin.create(config -> {
             config.addStaticFiles("/sub", Location.CLASSPATH);}
         	//config.addStaticFiles(staticFiles -> {staticFiles.directory = "/";});}
-        ).start(getHerokuAssignedPort()); //FOR HEROKU DEPLOYMENT
-        //).start(1013); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
+        //).start(getHerokuAssignedPort()); //FOR HEROKU DEPLOYMENT
+        ).start(1023); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
         
         //mysql connection
         //Class.forName("com.mysql.cj.jdbc.Driver");
@@ -177,8 +177,31 @@ public class Main {
         });
         
         app.get("/searchflights", ctx -> {
-        	
-            ctx.render("/sub/index.html");
+            ctx.render("/sub/searchflights.vm");
+        });
+        
+        app.post("/searchflights", ctx -> {
+        	String dest = ctx.formParam("destination");
+        	String flightsquery = "SELECT * FROM Flight WHERE destination_loc = '" + dest + "'";
+        	Statement stmt = con.createStatement();
+        	ResultSet rs = stmt.executeQuery(flightsquery);
+        	ArrayList<Flight> flights = new ArrayList<Flight>();
+        	while (rs.next()) {
+        		String s = rs.getString("departing_loc");
+				String date = rs.getString("date");
+				String time = rs.getString("time");
+				int id = rs.getInt("flight_id");
+				int sn = rs.getInt("total_seats");
+				int p = rs.getInt("price");
+				Flight f = new Flight(s, dest, date, time, sn, p, id);
+				if (f.isValid()) {
+					flights.add(f);
+				}
+        	}
+        	Map<String, ArrayList<Flight>> allflights = new HashMap<String, ArrayList<Flight>>() {{
+                put("flights",flights);
+    		}};
+            ctx.render("/sub/searchflights.vm",allflights);
         });
         
         app.get("/customerinfo", ctx -> {

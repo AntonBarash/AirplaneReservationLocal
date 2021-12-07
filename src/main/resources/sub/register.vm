@@ -18,7 +18,7 @@
       <label for="lname">Enter your last name:</label>
       <input type="lname" name="lname" required/><br />
       <label for="contactn">Enter your primary phone number (###-###-####):</label>
-      <input type="contactn" name="contactn" maxlength="12" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required/><br />
+      <input type="contactn" name="contactn" maxlength="10" pattern="[0-9]{10}" required/><br />
       <label for="creditcard">Enter your credit card number (no spaces):</label>
       <input type="number" name="creditcard" minlength="12" maxlength="19" required/><br />
       <label for="exp">Enter your credit card expiration date (MMdd):</label>

@@ -1,28 +1,30 @@
+#if($booked)
+  <h1>Successfully booked flight!</hi>
+#end
+
 <h2>Search and book for current flights</h2>
 
- <form method="post" action="/adminviewflights">
+<form method="post" action="/searchflights">
    <label for="destination">Enter a destination:</label>
    <input type="destination" name="destination" required/><br>
    <input type="submit" value="Search" />
  </form>
  <br>
- 
+
 <ul>
   #foreach($flight in $flights)
     <li>
-      <h4>From $flight[0] to $flight[1]</h4><br>
-      <h4>Departure day: $flight[2]</h4><br>
-      <h4>Departure time: $flight[3]</h4><br>
-      <h4>Estimated arrival time: $flight[4]</h4><br>
-      <h4>Seat Number: $flight[5]</h4><br>
-      <h4>Price: $flight[6]</h4><br>
+      <h4>From $flight.getStart() to $flight.getDest()</h4><br>
+      <h4>Departure day: $flight.getDate()</h4><br>
+      <h4>Departure time: $flight.getTime()</h4><br>
+      <h4>Seats Available: $flight.getSeat()</h4><br>
+      <h4>Price: $flight.getPrice()</h4><br>
       <form method="post" action="/bookflight">
         <label for="fid"></label>
-        <input type="hidden" name="fid" value=$flight[7] />
+        <input type="hidden" name="fid" value=$flight.getId() />
 	<input type="submit" value="Book this flight" />
         <br>
       </form>
-      #end
     </li>
   #end
 </ul>

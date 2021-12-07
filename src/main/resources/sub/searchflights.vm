@@ -4,13 +4,13 @@
 
 <h2>Search and book for current flights</h2>
 
-<form method="post" action="/adminviewflights">
+<form method="post" action="/searchflights">
    <label for="destination">Enter a destination:</label>
    <input type="destination" name="destination" required/><br>
    <input type="submit" value="Search" />
  </form>
  <br>
- 
+
 <ul>
   #foreach($flight in $flights)
     <li>
@@ -25,7 +25,6 @@
 	<input type="submit" value="Book this flight" />
         <br>
       </form>
-      #end
     </li>
   #end
 </ul>
