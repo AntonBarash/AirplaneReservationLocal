@@ -25,17 +25,23 @@ import java.util.Map;
 import java.util.ArrayList;
 public class Main {
 	static User curUser = new User(); 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
     	
         Javalin app = Javalin.create(config -> {
             config.addStaticFiles("/sub", Location.CLASSPATH);}
         	//config.addStaticFiles(staticFiles -> {staticFiles.directory = "/";});}
         //).start(getHerokuAssignedPort()); //FOR HEROKU DEPLOYMENT
-        ).start(1003); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
+        ).start(1011); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
         
         //mysql connection
-        Connection con=DriverManager.getConnection(  
-        	"jdbc:mysql://localhost:3306/AirplaneRes","root","romepage");
+        //Class.forName("com.mysql.cj.jdbc.Driver");
+        String dbUrl = "jdbc:mysql://us-cdbr-east-04.cleardb.com/heroku_50d2532af7614cd?password=1a653a5a&reconnect=true&user=b6e662acb93d8f";
+        //Connection con = DriverManager.getConnection(dbUrl, "b6e662acb93d8f", "1a653a5a");
+        Connection con = DriverManager.getConnection(dbUrl);
+        Statement stmt1 = con.createStatement();
+        ResultSet rs1 = stmt1.executeQuery("SELECT 1");
+        //Connection con=DriverManager.getConnection(  			THIS IS THE LOCAL DATABASE CONNECTION
+        //	"jdbc:mysql://localhost:3306/AirplaneRes","root","romepage");
         	
         //change all of these renders to the correct html page
         
@@ -122,7 +128,7 @@ public class Main {
             		else {
             			String fname = rs.getString("fname");
             			String lname = rs.getString("lname");
-            			curUser = new User(fname, lname, email, pass);
+            			Admin curAdmin = new Admin(email,pass);
             			ctx.render("/sub/admin.html");
             		}
             	}

@@ -1,0 +1,51 @@
+<h2>Add a new flight</h2>
+
+<form method="post" action="/makenewflight">
+  <label for="start">Enter a departure location:</label>
+  <input type="start" name="start" required/><br />
+  <label for="destination">Enter a destination:</label>
+  <input type="destination" name="destination" required/><br />
+  <label for="departuredate">Enter departure date:</label>
+  <input type="date" name="departuredate" required/><br />
+  <label for="departuretime">Enter departure time:</label>
+  <input type="time" name="departuretime" required/><br />
+  <label for="arrivaltime">Enter arrival time:</label>
+  <input type="time" name="arrivaltime" required/><br />
+  <label for="seats">Enter available seats:</label>
+  <input type="seats" name="seats" required/><br />
+  <label for="price">Enter price for flight:</label>
+  <input type="price" name="price" required/><br />
+  <input type="submit" value="Add flight" />
+ </form>
+ <br>
+ 
+ <h2>View current flights</h2>
+ 
+ <form method="post" action="/adminviewflights">
+   <label for="destination">Enter a destination:</label>
+   <input type="destination" name="destination" required/><br>
+   <input type="submit" value="Search" />
+ </form>
+ <br>
+ 
+<ul>
+  #foreach($flight in $flights)
+    <li>
+      <h4>From $flight[0] to $flight[1]</h4><br>
+      <h4>Departure day: $flight[2]</h4><br>
+      <h4>Departure time: $flight[3]</h4><br>
+      <h4>Estimated arrival time: $flight[4]</h4><br>
+      <h4>Seat Number: $flight[5]</h4><br>
+      <h4>Price: $flight[6]</h4><br>
+      <form method="post" action="/removeflight">
+        <label for="fid"></label>
+        <input type="hidden" name="fid" value=$flight[7] />
+	<input type="submit" value="Remove this flight" />
+        <br>
+      </form>
+      #end
+    </li>
+  #end
+</ul>
+
+<p>Back to <a href='/admin'>homepage</a></p>

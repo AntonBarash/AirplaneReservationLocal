@@ -9,7 +9,6 @@ public class User {
 	private int cvv;
 	private String email;
 	private String pass;
-	private String userType;
 	private boolean loggedIn;
 	
 	public User() {
@@ -21,7 +20,6 @@ public class User {
 		this.cvv = 0;
 		this.email = null;
 		this.pass = null;
-		this.userType = null;
 	}
 	
 	public User(String first, String last, int contact, int ccnum, int crv, String emai, String pas) {
@@ -33,24 +31,10 @@ public class User {
 		this.cvv = crv;
 		this.email = emai;
 		this.pass = pas;
-		this.userType = "user";
-	}
-	
-	public User(String first, String last, String emai, String pas) {
-		this.loggedIn = true;
-		this.fname = first;
-		this.lname = last;
-		this.email = emai;
-		this.pass = pas;
-		this.userType = "admin";
 	}
 	
 	public String getFullName() {
 		return fname + " " + lname;
-	}
-	
-	public String getUserType() {
-		return userType;
 	}
 	
 	public boolean isLoggedIn() {

@@ -1,0 +1,22 @@
+#if($wrongemail)
+ <h1>There is no account with that email, either create an account with it or login using an email that exists</h1>
+#end
+
+#if($wrongpass)
+ <h1>The account with this email has a different password than the one you put in!</h1>
+#end
+
+<h2>Login using your email and password!</h2>
+
+<body>
+  <div id="content">
+    <form method="post" action="/login">
+      <label for="email">Enter your email:</label>
+      <input type="email" name="email" required/><br />
+      <label for="password">Enter password:</label>
+      <input type="password" name="password" required/><br />
+      <input type="submit" />
+    </form>
+  </div>
+</body>
+<a href='/'>Home</a>
