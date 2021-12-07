@@ -33,13 +33,14 @@ public class Main {
             config.addStaticFiles("/sub", Location.CLASSPATH);}
         	//config.addStaticFiles(staticFiles -> {staticFiles.directory = "/";});}
         //).start(getHerokuAssignedPort()); //FOR HEROKU DEPLOYMENT
-        ).start(1023); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
+        ).start(1035); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
         
         //mysql connection
         //Class.forName("com.mysql.cj.jdbc.Driver");
         String dbUrl = "jdbc:mysql://us-cdbr-east-04.cleardb.com/heroku_50d2532af7614cd?password=1a653a5a&reconnect=true&user=b6e662acb93d8f";
+    	Connection con = DriverManager.getConnection(dbUrl);
         //Connection con = DriverManager.getConnection(dbUrl, "b6e662acb93d8f", "1a653a5a");
-        Connection con = DriverManager.getConnection(dbUrl);
+        
         Statement stmt1 = con.createStatement();
         ResultSet rs1 = stmt1.executeQuery("SELECT 1");
         ResultSet rs2 = stmt1.executeQuery("SELECT 1");
@@ -207,6 +208,29 @@ public class Main {
         app.get("/customerinfo", ctx -> {
             ctx.render("/sub/customer.html");
         });
+        
+        app.post("/bookflight", ctx -> {
+        	int flight_id = Integer.parseInt(ctx.formParam("fid"));
+        	int seat_no = getSeatNumber(flight_id,con);
+        	String inputquery = String.format("INSERT INTO Books(customer_id, flight_id, seatn) values(%d,%d,%d)",curUser.getId(),flight_id,seat_no);
+        	Statement stmt = con.createStatement();
+        	stmt.executeUpdate(inputquery);
+        	//String inputquery = String.format("INSERT INTO Books(customer_id, flight_id, seatn) values(%d,%d,%d)",curUser.getId(),flight_id,seat_no);
+        	//rs = stmt.executeQuery(selectquery);
+        	String s = ctx.formParam("departing_loc");
+			String dest = ctx.formParam("destination_loc");
+			String date = ctx.formParam("date");
+			String time = ctx.formParam("time");
+			int p = Integer.parseInt(ctx.formParam("price"));
+			Flight f = new Flight(s, dest, date, time, seat_no, p, flight_id);
+			userFlights.add(f);
+			String updatequery = "UPDATE Flight SET total_seats = total_seats - 1 WHERE flight_id = " + flight_id;
+			stmt.executeUpdate(updatequery);
+        	Map<String, Integer> booked = new HashMap<String, Integer>() {{
+                put("booked",1);
+    		}};
+            ctx.render("/sub/searchflights.vm",booked);
+        });
     }
     
     private static int getHerokuAssignedPort() {
@@ -217,6 +241,18 @@ public class Main {
         return 1000;
     }
     
-    
-
+    private static int getSeatNumber(int flight_id, Connection con) throws SQLException {
+    	String getseat = String.format("SELECT * from Books WHERE flight_id = %d ORDER BY seatn",flight_id);
+    	Statement stmt = con.createStatement();
+    	ResultSet rs = stmt.executeQuery(getseat);
+    	int emptyseat = 1;
+    	while (rs.next()) {
+    		int curseat = rs.getInt("seatn");
+    		if (curseat != emptyseat) {
+    			break;
+    		}
+    		emptyseat += 1;
+    	}
+    	return emptyseat;
+    }
 }

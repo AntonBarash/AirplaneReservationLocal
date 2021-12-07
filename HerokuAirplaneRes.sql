@@ -31,12 +31,16 @@ flight_id INTEGER,
 seatn INTEGER,
 FOREIGN KEY (customer_id) REFERENCES Customer(customer_id),
 FOREIGN KEY (flight_id) REFERENCES Flight(flight_id),
-PRIMARY KEY(customer_id, flight_id));
+PRIMARY KEY(customer_id, flight_id, seatn));
 
 INSERT INTO Flight(time,destination_loc,departing_loc,date,total_seats,price) values('01:01', 'Boston', 'Chicago', '2022-01-01', 5, 1);
 INSERT INTO Flight(time,destination_loc,departing_loc,date,total_seats,price) values('01:01', 'Boston', 'Philadelphia', '2022-01-01', 4, 2);
 INSERT INTO Flight(time,destination_loc,departing_loc,date,total_seats,price) values('01:01', 'Boston', 'Toronto', '2022-01-01', 3, 3);
 
+INSERT INTO Customer(fname, lname, contactn, creditcardn, ccv, exp, email, pass, account_type) values('a','a',1111111111,1,1,1,'a@a','a',0);
+
 SELECT * FROM Flight;
 
 SELECT * FROM Customer;
+
+SELECT * FROM Books;
