@@ -33,7 +33,7 @@ public class Main {
             config.addStaticFiles("/sub", Location.CLASSPATH);}
         	//config.addStaticFiles(staticFiles -> {staticFiles.directory = "/";});}
         //).start(getHerokuAssignedPort()); //FOR HEROKU DEPLOYMENT
-        ).start(1000); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
+        ).start(1001); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
         
         //mysql connection
         //Class.forName("com.mysql.cj.jdbc.Driver");
@@ -85,25 +85,6 @@ public class Main {
         		stmt.close();
         		ctx.render("/sub/customer.html");
         	} 
-        });
-        
-        ArrayList<Integer> someList = new ArrayList<Integer>();
-        someList.add(1);
-        someList.add(2);
-        ArrayList<Integer> xitem = new ArrayList<Integer>();
-        xitem.add(1);
-        Map<String, Object> loggedin2 = new HashMap<String, Object>() {{
-            put("yo", "Hello");
-            put("listItems",someList);
-            put("xitem",xitem);
-        }};
-        app.get("/my-list", ctx -> {
-        	Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM Actor");
-            rs.next();
-            System.out.println(rs.getInt("year_born"));
-            loggedin2.put("yo1",rs);
-            ctx.render("/sub/my-list.vm", loggedin2);     	
         });
         
         app.post("/cancel", ctx -> {
@@ -240,8 +221,6 @@ public class Main {
         	String inputquery = String.format("INSERT INTO Books(customer_id, flight_id, seatn) values(%d,%d,%d)",curUser.getId(),flight_id,seat_no);
         	Statement stmt = con.createStatement();
         	stmt.executeUpdate(inputquery);
-        	//String inputquery = String.format("INSERT INTO Books(customer_id, flight_id, seatn) values(%d,%d,%d)",curUser.getId(),flight_id,seat_no);
-        	//rs = stmt.executeQuery(selectquery);
         	String s = ctx.formParam("departing_loc");
 			String dest = ctx.formParam("destination_loc");
 			String date = ctx.formParam("date");
@@ -380,41 +359,17 @@ public class Main {
             ctx.render("/sub/adminflights.vm",allflights);
         });
         
-        /*
         app.post("/removeflight", ctx -> {
-        	String cemail = ctx.formParam("cemail");
-        	String custquery = "SELECT * FROM Customer WHERE email = '" + cemail + "'";
+        	int flight_id = Integer.parseInt(ctx.formParam("fid"));
+        	String deletequery = "DELETE FROM Flight WHERE flight_id = " + flight_id;
         	Statement stmt = con.createStatement();
-        	ResultSet rs = stmt.executeQuery(custquery);
-        	rs.next();
-        	String fname = rs.getString("fname");
-			String lname = rs.getString("lname");
-			String pass = rs.getString("pass");
-			int contactn = rs.getInt("contactn");
-			int ccnum = rs.getInt("creditcardn");
-			int ccv = rs.getInt("ccv");
-			int exp = rs.getInt("exp");
-			int custid = rs.getInt("customer_id");
-			curUser = new User(fname, lname, contactn, ccnum, ccv, exp, cemail, pass, custid);
-			String flightquery = String.format("SELECT * FROM Books B, Flight F WHERE B.customer_id = %d AND B.flight_id = F.flight_id", custid);
-			rs = stmt.executeQuery(flightquery);
-			while (rs.next()) {
-				String s = rs.getString("departing_loc");
-				String dest = rs.getString("destination_loc");
-				String date = rs.getString("date");
-				String time = rs.getString("time");
-				int id = rs.getInt("flight_id");
-				int sn = rs.getInt("seatn");
-				int p = rs.getInt("price");
-				Flight f = new Flight(s, dest, date, time, sn, p, id);
-				userFlights.add(f);
-			}
-			Map<String, Object> userinfo = new HashMap<String, Object>() {{
-                put("cust",curUser);
-                put("flights",userFlights);
+        	stmt.executeUpdate(deletequery);
+        	Map<String, Integer> removed = new HashMap<String, Integer>() {{
+                put("removed",1);
     		}};
-            ctx.render("/sub/customerinfo.vm",userinfo);
-        });*/
+    		stmt.close();
+            ctx.render("/sub/adminflights.vm",removed);
+        });
         
     }
     
