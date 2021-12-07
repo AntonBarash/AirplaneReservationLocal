@@ -13,17 +13,20 @@ public class Main {
     	//initialization of javalin app
         Javalin app = Javalin.create(config -> {
             config.addStaticFiles("/sub", Location.CLASSPATH);}
-        ).start(getHerokuAssignedPort()); //FOR HEROKU DEPLOYMENT
-        //).start(1001); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
+        //).start(getHerokuAssignedPort()); //FOR HEROKU DEPLOYMENT
+        ).start(1000); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
         
-        //mysql connection
-        //Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/AirplaneRes","root","romepage"); //LOCALHOST CONNECTION
+        //MYSQL CONNECTIONS:
+        
+        //LOCALHOST CONNECTION, CHANGE "user" and "pass" TO LOCAL MYSQL USER and PASS:
+        //Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/AirplaneRes","root","romepage"); //LOCALHOST CONNECTION  
+        
         
         //HEROKU CLEARDB CONNECTION, IS SLOW AND CAN CRASH (UNCOMMENT BOTH OF NEXT LINES):
         //String dbUrl = "jdbc:mysql://us-cdbr-east-04.cleardb.com/heroku_50d2532af7614cd?password=1a653a5a&reconnect=true&user=b6e662acb93d8f";
         //Connection con = DriverManager.getConnection(dbUrl);
         
-        //AWS CONNECTION, IN TESTING:
+        //AWS CONNECTION, FASTEST CONNECTION AND HOSTED REMOTELY, ONLY FAILS IF AWS GOES DOWN FOR SOME REASON:
         String dbUrl = "jdbc:mysql://database-1.cdwkgehsrjdn.us-east-2.rds.amazonaws.com:3306/awsap?user=admin&password=password";
         Connection con = DriverManager.getConnection(dbUrl);
             	
