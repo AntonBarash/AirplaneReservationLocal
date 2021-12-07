@@ -8,7 +8,7 @@
   <label for="departuredate">Enter departure date (yyyy-MM-dd):</label>
   <input type="departuredate" name="departuredate" maxlength="10" pattern="[0-9]{4}-[0-9]{2}-[0-3][0-9]" title = "yyyy-MM-dd" required/><br />
   <label for="departuretime">Enter departure time (HH:mm):</label>
-  <input type="departuretime" name="departuretime" maxlength="5" pattern="[0-9]{2}:[0-9]{2} title = "HH:mm" required/><br />
+  <input type="departuretime" name="departuretime" maxlength="5" pattern="[0-9]{2}:[0-9]{2}" title = "HH:mm" required/><br />
   <label for="seats">Enter available seats:</label>
   <input type="number" name="seats" required/><br />
   <label for="price">Enter price for flight: $</label>
@@ -16,34 +16,40 @@
   <input type="submit" value="Add flight" />
  </form>
  <br>
- 
+
  <h2>View current flights</h2>
- 
+
  <form method="post" action="/adminviewflights">
    <label for="destination">Enter a destination:</label>
    <input type="destination" name="destination" required/><br>
    <input type="submit" value="Search" />
  </form>
  <br>
- 
-<ul>
-  #foreach($flight in $flights)
-    <li>
-      <h4>From $flight[0] to $flight[1]</h4><br>
-      <h4>Departure day: $flight[2]</h4><br>
-      <h4>Departure time: $flight[3]</h4><br>
-      <h4>Estimated arrival time: $flight[4]</h4><br>
-      <h4>Seat Number: $flight[5]</h4><br>
-      <h4>Price: $flight[6]</h4><br>
-      <form method="post" action="/removeflight">
-        <label for="fid"></label>
-        <input type="hidden" name="fid" value=$flight[7] />
-	<input type="submit" value="Remove this flight" />
-        <br>
-      </form>
-      #end
-    </li>
-  #end
-</ul>
+
+#if ($flights)
+  <ul>
+    #foreach($flight in $flights)
+      <li>
+        From $flight.getStart() to $flight.getDest()<br>
+        Departure day: $flight.getDate()<br>
+        Departure time: $flight.getTime()<br>
+        Seats Available: $flight.getSeat()<br>
+        Price: $flight.getPrice()<br>
+        <form method="post" action="/removeflight">
+          <label for="fid"></label>
+          <label for="fid"></label>
+	  <input type="hidden" name="start" $flight.getStart() />
+	  <input type="hidden" name="dest" value=$flight.getDest() />
+	  <input type="hidden" name="date" value=$flight.getDate() />
+	  <input type="hidden" name="time" value=$flight.getTime() />
+	  <input type="hidden" name="price" value=$flight.getPrice() />
+          <input type="hidden" name="fid" value=$flight.getId() />
+	  <input type="submit" value="Remove this flight" />
+          <br>
+        </form>
+      </li>
+    #end
+  </ul>
+#end
 
 <p>Back to <a href='/admin'>homepage</a></p>

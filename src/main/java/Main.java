@@ -33,7 +33,7 @@ public class Main {
             config.addStaticFiles("/sub", Location.CLASSPATH);}
         	//config.addStaticFiles(staticFiles -> {staticFiles.directory = "/";});}
         //).start(getHerokuAssignedPort()); //FOR HEROKU DEPLOYMENT
-        ).start(1050); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
+        ).start(1053); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
         
         //mysql connection
         //Class.forName("com.mysql.cj.jdbc.Driver");
@@ -337,7 +337,93 @@ public class Main {
             ctx.render("/sub/customerinfo.vm",userinfo);
         });
         
+        app.get("/adminflights", ctx -> {
+            ctx.render("/sub/adminflights.vm");
+        });
         
+        app.post("/makenewflight", ctx -> {
+			String start = ctx.formParam("start");
+			String dest = ctx.formParam("destination");
+			String date = ctx.formParam("departuredate");
+			String time = ctx.formParam("departuretime");
+			int seats = Integer.parseInt(ctx.formParam("seats"));
+			int price = Integer.parseInt(ctx.formParam("price"));
+			Statement stmt = con.createStatement();
+			String insertquery = String.format("INSERT INTO Flight(time,destination_loc,departing_loc,date,total_seats,price) values('%s', '%s', '%s', '%s', %d, %d)",time,dest,start,date,seats,price);	
+			stmt.executeUpdate(insertquery);
+            ctx.render("/sub/adminflights.vm");
+        });
+        
+        app.post("/adminviewflights", ctx -> {
+        	String cemail = ctx.formParam("cemail");
+        	String custquery = "SELECT * FROM Customer WHERE email = '" + cemail + "'";
+        	Statement stmt = con.createStatement();
+        	ResultSet rs = stmt.executeQuery(custquery);
+        	rs.next();
+        	String fname = rs.getString("fname");
+			String lname = rs.getString("lname");
+			String pass = rs.getString("pass");
+			int contactn = rs.getInt("contactn");
+			int ccnum = rs.getInt("creditcardn");
+			int ccv = rs.getInt("ccv");
+			int exp = rs.getInt("exp");
+			int custid = rs.getInt("customer_id");
+			curUser = new User(fname, lname, contactn, ccnum, ccv, exp, cemail, pass, custid);
+			String flightquery = String.format("SELECT * FROM Books B, Flight F WHERE B.customer_id = %d AND B.flight_id = F.flight_id", custid);
+			rs = stmt.executeQuery(flightquery);
+			while (rs.next()) {
+				String s = rs.getString("departing_loc");
+				String dest = rs.getString("destination_loc");
+				String date = rs.getString("date");
+				String time = rs.getString("time");
+				int id = rs.getInt("flight_id");
+				int sn = rs.getInt("seatn");
+				int p = rs.getInt("price");
+				Flight f = new Flight(s, dest, date, time, sn, p, id);
+				userFlights.add(f);
+			}
+			Map<String, Object> userinfo = new HashMap<String, Object>() {{
+                put("cust",curUser);
+                put("flights",userFlights);
+    		}};
+            ctx.render("/sub/customerinfo.vm",userinfo);
+        });
+        
+        /*
+        app.post("/removeflight", ctx -> {
+        	String cemail = ctx.formParam("cemail");
+        	String custquery = "SELECT * FROM Customer WHERE email = '" + cemail + "'";
+        	Statement stmt = con.createStatement();
+        	ResultSet rs = stmt.executeQuery(custquery);
+        	rs.next();
+        	String fname = rs.getString("fname");
+			String lname = rs.getString("lname");
+			String pass = rs.getString("pass");
+			int contactn = rs.getInt("contactn");
+			int ccnum = rs.getInt("creditcardn");
+			int ccv = rs.getInt("ccv");
+			int exp = rs.getInt("exp");
+			int custid = rs.getInt("customer_id");
+			curUser = new User(fname, lname, contactn, ccnum, ccv, exp, cemail, pass, custid);
+			String flightquery = String.format("SELECT * FROM Books B, Flight F WHERE B.customer_id = %d AND B.flight_id = F.flight_id", custid);
+			rs = stmt.executeQuery(flightquery);
+			while (rs.next()) {
+				String s = rs.getString("departing_loc");
+				String dest = rs.getString("destination_loc");
+				String date = rs.getString("date");
+				String time = rs.getString("time");
+				int id = rs.getInt("flight_id");
+				int sn = rs.getInt("seatn");
+				int p = rs.getInt("price");
+				Flight f = new Flight(s, dest, date, time, sn, p, id);
+				userFlights.add(f);
+			}
+			Map<String, Object> userinfo = new HashMap<String, Object>() {{
+                put("cust",curUser);
+                put("flights",userFlights);
+    		}};
+            ctx.render("/sub/customerinfo.vm",userinfo);
+        });*/
         
     }
     
