@@ -35,7 +35,6 @@
         Price: $flight.getPrice()<br>
         <form method="post" action="/removeflight">
           <label for="fid"></label>
-          <label for="fid"></label>
 	  <input type="hidden" name="start" $flight.getStart() />
 	  <input type="hidden" name="dest" value=$flight.getDest() />
 	  <input type="hidden" name="date" value=$flight.getDate() />
