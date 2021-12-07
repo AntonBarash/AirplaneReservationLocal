@@ -18,6 +18,7 @@ Here is a list your flights:
 	<input type="hidden" name="date" value=$flight.getDate() />
 	<input type="hidden" name="time" value=$flight.getTime() />
 	<input type="hidden" name="price" value=$flight.getPrice() />
+	<input type="hidden" name="seat" value=$flight.getSeat() />
         <input type="hidden" name="fid" value=$flight.getId() />
 	<input type="submit" value="Cancel this flight" />
         <br>
