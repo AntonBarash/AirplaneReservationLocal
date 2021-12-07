@@ -4,7 +4,7 @@
 
 <h2>Search and book for current flights</h2>
 
- <form method="post" action="/adminviewflights">
+<form method="post" action="/adminviewflights">
    <label for="destination">Enter a destination:</label>
    <input type="destination" name="destination" required/><br>
    <input type="submit" value="Search" />
