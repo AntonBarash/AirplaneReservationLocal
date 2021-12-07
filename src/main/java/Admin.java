@@ -1,5 +1,4 @@
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -8,26 +7,31 @@ import java.util.ArrayList;
 import io.javalin.http.Context;
 
 public class Admin {
+	//admin class variables
 	private String email;
 	private String pass;
 	private boolean loggedIn;
 
+	//default constructor, initializes not logged in admin object
 	public Admin() {
 		this.loggedIn = false;
 		this.email = null;
 		this.pass = null;
 	}
 
+	//constructor for when an admin logs in (no register functionality for admins, accounts are premade)
 	public Admin(String email, String pas) {
 		this.loggedIn = true;
 		this.email = email;
 		this.pass = pas;
 	}
 
+	//getter method for retrieving admins logged in status
 	public boolean isLoggedIn() {
 		return loggedIn;
 	}
 	
+	//addflight: adds a flight to the table of flights, based on admin input about the flight
 	public static void addFlight(Context ctx, Connection con) throws SQLException {
 		String start = ctx.formParam("start");
 		String dest = ctx.formParam("destination");
@@ -41,6 +45,7 @@ public class Admin {
 		stmt.close();
 	}
 	
+	//viewflights: returns an arraylist of all the flights for which the destination is what the admin input in the form
 	public static ArrayList<Flight> viewFlights(Context ctx, Connection con) throws SQLException {
 		String dest = ctx.formParam("destination");
     	String flightsquery = "SELECT * FROM Flight WHERE destination_loc = '" + dest + "'";
@@ -64,6 +69,8 @@ public class Admin {
     	return flights;
 	}
 	
+	//cancelflight: cancels the specific flight the admin clicked to cancel for the user the admin is looking at, 
+	//returning the index of the flight in the user's userFlights arraylist
 	public static int cancelFlight(Context ctx, Connection con, User curUser) throws SQLException {
 		int flight_id = Integer.parseInt(ctx.formParam("fid"));
     	int seat_no = Integer.parseInt(ctx.formParam("seat"));
@@ -77,6 +84,7 @@ public class Admin {
 		return index;
 	}
 	
+	//removeflight: removes the flight from the database that the admin has chosen to remove
 	public static void removeFlight(Context ctx, Connection con) throws SQLException {
 		int flight_id = Integer.parseInt(ctx.formParam("fid"));
     	String deletequery = "DELETE FROM Flight WHERE flight_id = " + flight_id;
@@ -85,6 +93,7 @@ public class Admin {
     	stmt.close();
 	}
 
+	//searchcustomer: searches for all customer information based on admin input of the user's input, and returns a user object for that user
 	public static User searchCustomer(Context ctx, Connection con) throws SQLException {
 		String cemail = ctx.formParam("cemail");
     	String custquery = "SELECT * FROM Customer WHERE email = '" + cemail + "'";
@@ -105,8 +114,8 @@ public class Admin {
 		return curUser;
 	}
 	
+	//searchcustomerflights: returns an arraylist of all the flights of the user the admin is currently looking at
 	public static ArrayList<Flight> searchCustomerFlights(Context ctx, Connection con, User curUser) throws SQLException {
-		
 		String flightquery = String.format("SELECT * FROM Books B, Flight F WHERE B.customer_id = %d AND B.flight_id = F.flight_id", curUser.getId());
 		Statement stmt = con.createStatement();
 		ResultSet rs = stmt.executeQuery(flightquery);
