@@ -20,9 +20,9 @@
       <label for="contactn">Enter your primary phone number (###-###-####):</label>
       <input type="contactn" name="contactn" maxlength="12" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required/><br />
       <label for="creditcard">Enter your credit card number (no spaces):</label>
-      <input type="creditcard" name="creditcard" maxlength="4" pattern="\d{4}"/><br />
+      <input type="number" name="creditcard" minlength="12" maxlength="19" required/><br />
       <label for="exp">Enter your credit card expiration date (MMdd):</label>
-      <input type="exp" name="exp" maxlength="4" pattern="\d{4}"/><br />
+      <input type="exp" name="exp" maxlength="4" pattern="\d{4}" required/><br />
       <label for="cvv">Enter your credit card security code:</label>
       <input type="cvv" name="cvv" maxlength="3" pattern="\d{3}" required/><br />
       <label for="email">Enter your email:</label>
