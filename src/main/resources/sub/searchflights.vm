@@ -1,5 +1,5 @@
 #if($booked)
-  <h1>Successfully booked flight!</hi>
+  <h1>Successfully booked flight!</h1>
 #end
 
 <h2>Search and book for current flights</h2>
