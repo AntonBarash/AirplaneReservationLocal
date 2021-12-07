@@ -36,15 +36,6 @@ public class User {
 		this.userType = "user";
 	}
 	
-	public User(String first, String last, String emai, String pas) {
-		this.loggedIn = true;
-		this.fname = first;
-		this.lname = last;
-		this.email = emai;
-		this.pass = pas;
-		this.userType = "admin";
-	}
-	
 	public String getFullName() {
 		return fname + " " + lname;
 	}
