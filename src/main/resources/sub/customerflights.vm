@@ -20,6 +20,7 @@ Here is a list your flights:
 	<input type="hidden" name="price" value=$flight.getPrice() />
 	<input type="hidden" name="seat" value=$flight.getSeat() />
         <input type="hidden" name="fid" value=$flight.getId() />
+	<input type="hidden" name="index" value=$foreach.count />
 	<input type="submit" value="Cancel this flight" />
         <br>
       </form>
