@@ -5,6 +5,7 @@ DROP TABLE Books;
 DROP TABLE Flight;
 DROP TABLE Customer;
 CREATE TABLE Flight(
+time VARCHAR(255),
 destination_loc VARCHAR(255),
 departing_loc VARCHAR(255),
 date VARCHAR(255),
@@ -19,6 +20,7 @@ lname VARCHAR(255),
 contactn INTEGER,
 creditcardn INTEGER,
 ccv INTEGER,
+exp INTEGER,
 email VARCHAR(255),
 pass VARCHAR(255),
 account_type INTEGER,
@@ -42,3 +44,4 @@ INSERT INTO Customer(fname,lname,contactn,creditcardn,ccv,email,pass,account_typ
 INSERT INTO Books(customer_id, flight_id, seatn) values(1, 1, 1);
 
 SELECT * FROM Customer;
+SELECT * FROM Books WHERE customer_id = '';

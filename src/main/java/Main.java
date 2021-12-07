@@ -25,13 +25,15 @@ import java.util.Map;
 import java.util.ArrayList;
 public class Main {
 	static User curUser = new User(); 
+	static Admin curAdmin = new Admin();
+	static ArrayList<Flight> userFlights = new ArrayList<Flight>();
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
     	
         Javalin app = Javalin.create(config -> {
             config.addStaticFiles("/sub", Location.CLASSPATH);}
         	//config.addStaticFiles(staticFiles -> {staticFiles.directory = "/";});}
         //).start(getHerokuAssignedPort()); //FOR HEROKU DEPLOYMENT
-        ).start(1011); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
+        ).start(1013); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
         
         //mysql connection
         //Class.forName("com.mysql.cj.jdbc.Driver");
@@ -66,13 +68,18 @@ public class Main {
         		int contactn = Integer.parseInt(ctx.formParam("contactn"));
         		int ccnum = Integer.parseInt(ctx.formParam("creditcard"));
         		int ccv = Integer.parseInt(ctx.formParam("cvv"));
-        		//String exp = ctx.formParam("exp");
+        		int exp = Integer.parseInt(ctx.formParam("exp"));
         		String pass = ctx.formParam("password");
-        		curUser = new User(fname, lname, contactn, ccnum, ccv, email, pass);
+        		String inputquery = String.format("INSERT INTO Customer(fname,lname,contactn,creditcardn,ccv,exp,email,pass,account_type) values('%s','%s',%d,%d,%d,%d,'%s','%s',%d)", 
+                				fname,lname,contactn,ccnum,ccv,exp,email,pass,0);
+                stmt.executeUpdate(inputquery);
+        		//String exp = ctx.formParam("exp");
+                rs = stmt.executeQuery("SELECT customer_id FROM Customer WHERE email = '" + email + "'");
+                rs.next();
+                int id = rs.getInt("customer_id");
+        		curUser = new User(fname, lname, contactn, ccnum, ccv, exp, email, pass, id);
         		//stmt = con.createStatement(); PRETTY SURE I DONT NEED THIS LINE, ONE STATEMENT CREATION IS ENOUGH
-        		String inputquery = String.format("INSERT INTO Customer(fname,lname,contactn,creditcardn,ccv,email,pass,account_type) values('%s','%s',%d,%d,%d,'%s','%s',%d)", 
-        				fname,lname,contactn,ccnum,ccv,email,pass,0);
-        		stmt.executeUpdate(inputquery);
+        		
         		ctx.render("/sub/customer.html");
         	} 
         });
@@ -122,7 +129,22 @@ public class Main {
             			int contactn = rs.getInt("contactn");
             			int ccnum = rs.getInt("creditcardn");
             			int ccv = rs.getInt("ccv");
-            			curUser = new User(fname, lname, contactn, ccnum, ccv, email, pass);
+            			int exp = rs.getInt("exp");
+            			int custid = rs.getInt("customer_id");
+            			curUser = new User(fname, lname, contactn, ccnum, ccv, exp, email, pass, custid);
+            			String flightquery = String.format("SELECT * FROM Books B, Flight F WHERE B.customer_id = %d AND B.flight_id = F.flight_id", custid);
+            			rs = stmt.executeQuery(flightquery);
+            			while (rs.next()) {
+            				String s = rs.getString("departing_loc");
+            				String dest = rs.getString("destination_loc");
+            				String date = rs.getString("date");
+            				String time = rs.getString("time");
+            				int id = rs.getInt("flight_id");
+            				int sn = rs.getInt("seatn");
+            				int p = rs.getInt("price");
+            				Flight f = new Flight(s, dest, date, time, sn, p, id);
+            				userFlights.add(f);
+            			}
             			ctx.render("/sub/customer.html");
             		}
             		else {
@@ -149,10 +171,12 @@ public class Main {
         
         app.get("/logout", ctx -> {
         	curUser = new User();
+        	curAdmin = new Admin();
             ctx.render("/sub/index.html");
         });
         
-        app.get("/flightinfo", ctx -> {
+        app.get("/searchflights", ctx -> {
+        	
             ctx.render("/sub/index.html");
         });
         

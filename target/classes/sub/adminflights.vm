@@ -11,7 +11,7 @@
   <input type="departuretime" name="departuretime" required/><br />
   <label for="seats">Enter available seats:</label>
   <input type="seats" name="seats" required/><br />
-  <label for="price">Enter price for flight:</label>
+  <label for="price">Enter price for flight: $</label>
   <input type="price" name="price" required/><br />
   <input type="submit" value="Add flight" />
  </form>
