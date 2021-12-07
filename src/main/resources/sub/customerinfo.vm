@@ -27,6 +27,7 @@
         Departure time: $flight.getTime()<br>
         Seats Number: $flight.getSeat()<br>
         Price: $flight.getPrice()<br>
+	#if ($flight.isValidDate())
         <form method="post" action="/admincancel">
           <label for="fid"></label>
 	  <input type="hidden" name="start" $flight.getStart() />
@@ -40,6 +41,7 @@
 	  <input type="submit" value="Cancel this flight" />
           <br>
         </form>
+	#end
       </li>
     #end
   </ul>
