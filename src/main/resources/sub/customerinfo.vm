@@ -5,38 +5,40 @@
 	<input type="submit" value="Search" />
 </form>
 
-<ul>
-  Customer Name: $cust.getFullName()<br>
-  Customer Email: $cust.getEmail()<br>
-  Contact Number: $cust.getContact()<br>
-  Credit Card Number: $cust.getCCN() Exp: $cust.getEXP() CVV: $cust.getCVV()<br>
-  Password: $cust.getPass()<br>
-</ul>
-<br>
-Here is a list of the current customer's flights:
-<ul>
-  #foreach($flight in $flights)
-    <li>
-      From $flight.getStart() to $flight.getDest()<br>
-      Departure day: $flight.getDate()<br>
-      Departure time: $flight.getTime()<br>
-      Seats Number: $flight.getSeat()<br>
-      Price: $flight.getPrice()<br>
-      <form method="post" action="/customercancel">
-        <label for="fid"></label>
-	<input type="hidden" name="start" $flight.getStart() />
-	<input type="hidden" name="dest" value=$flight.getDest() />
-	<input type="hidden" name="date" value=$flight.getDate() />
-	<input type="hidden" name="time" value=$flight.getTime() />
-	<input type="hidden" name="price" value=$flight.getPrice() />
-	<input type="hidden" name="seat" value=$flight.getSeat() />
-        <input type="hidden" name="fid" value=$flight.getId() />
-	<input type="hidden" name="index" value=$foreach.count />
-	<input type="submit" value="Cancel this flight" />
-        <br>
-      </form>
-    </li>
-  #end
-</ul>
+#if ($cust)
+  <ul>
+    Customer Name: $cust.getFullName()<br>
+    Customer Email: $cust.getEmail()<br>
+    Contact Number: $cust.getContact()<br>
+    Credit Card Number: $cust.getCCN() Exp: $cust.getEXP() CVV: $cust.getCVV()<br>
+    Password: $cust.getPass()<br>
+  </ul>
+  <br>
+  Here is a list of the current customer's flights:
+  <ul>
+    #foreach($flight in $flights)
+      <li>
+        From $flight.getStart() to $flight.getDest()<br>
+        Departure day: $flight.getDate()<br>
+        Departure time: $flight.getTime()<br>
+        Seats Number: $flight.getSeat()<br>
+        Price: $flight.getPrice()<br>
+        <form method="post" action="/customercancel">
+          <label for="fid"></label>
+	  <input type="hidden" name="start" $flight.getStart() />
+	  <input type="hidden" name="dest" value=$flight.getDest() />
+	  <input type="hidden" name="date" value=$flight.getDate() />
+	  <input type="hidden" name="time" value=$flight.getTime() />
+	  <input type="hidden" name="price" value=$flight.getPrice() />
+	  <input type="hidden" name="seat" value=$flight.getSeat() />
+          <input type="hidden" name="fid" value=$flight.getId() />
+	  <input type="hidden" name="index" value=$foreach.count />
+	  <input type="submit" value="Cancel this flight" />
+          <br>
+        </form>
+      </li>
+    #end
+  </ul>
+#end
 
 <p>Back to <a href='/admin'>homepage</a></p>
