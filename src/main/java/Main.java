@@ -33,7 +33,7 @@ public class Main {
             config.addStaticFiles("/sub", Location.CLASSPATH);}
         	//config.addStaticFiles(staticFiles -> {staticFiles.directory = "/";});}
         //).start(getHerokuAssignedPort()); //FOR HEROKU DEPLOYMENT
-        ).start(1046); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
+        ).start(1050); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
         
         //mysql connection
         //Class.forName("com.mysql.cj.jdbc.Driver");
@@ -217,12 +217,14 @@ public class Main {
             ctx.render("/sub/searchflights.vm",allflights);
         });
         
-        app.get("/customerinfo", ctx -> {
+        app.get("/customer", ctx -> {
             ctx.render("/sub/customer.html");
         });
         
-        app.get("/customer", ctx -> {
-            ctx.render("/sub/customer.html");
+        app.get("/admin", ctx -> {
+        	curUser = new User();
+        	userFlights = new ArrayList<Flight>();
+            ctx.render("/sub/admin.html");
         });
         
         app.get("/customerflights", ctx -> {
@@ -273,6 +275,70 @@ public class Main {
     		stmt.close();
             ctx.render("/sub/customerflights.vm",canceled);
         });
+        
+        app.get("/customerinfo", ctx -> {
+            ctx.render("/sub/customerinfo.vm");
+        });
+        
+        app.post("/searchcustomer", ctx -> {
+        	String cemail = ctx.formParam("cemail");
+        	String custquery = "SELECT * FROM Customer WHERE email = '" + cemail + "'";
+        	Statement stmt = con.createStatement();
+        	ResultSet rs = stmt.executeQuery(custquery);
+        	rs.next();
+        	String fname = rs.getString("fname");
+			String lname = rs.getString("lname");
+			String pass = rs.getString("pass");
+			int contactn = rs.getInt("contactn");
+			int ccnum = rs.getInt("creditcardn");
+			int ccv = rs.getInt("ccv");
+			int exp = rs.getInt("exp");
+			int custid = rs.getInt("customer_id");
+			curUser = new User(fname, lname, contactn, ccnum, ccv, exp, cemail, pass, custid);
+			String flightquery = String.format("SELECT * FROM Books B, Flight F WHERE B.customer_id = %d AND B.flight_id = F.flight_id", custid);
+			rs = stmt.executeQuery(flightquery);
+			while (rs.next()) {
+				String s = rs.getString("departing_loc");
+				String dest = rs.getString("destination_loc");
+				String date = rs.getString("date");
+				String time = rs.getString("time");
+				int id = rs.getInt("flight_id");
+				int sn = rs.getInt("seatn");
+				int p = rs.getInt("price");
+				Flight f = new Flight(s, dest, date, time, sn, p, id);
+				userFlights.add(f);
+			}
+			Map<String, Object> userinfo = new HashMap<String, Object>() {{
+                put("cust",curUser);
+                put("flights",userFlights);
+    		}};
+            ctx.render("/sub/customerinfo.vm",userinfo);
+        });
+        
+        app.post("/admincancel", ctx -> {
+        	int flight_id = Integer.parseInt(ctx.formParam("fid"));
+        	int seat_no = Integer.parseInt(ctx.formParam("seat"));
+        	int index = Integer.parseInt(ctx.formParam("index")) - 1;
+        	String deletequery = String.format("DELETE FROM Books WHERE flight_id = %d AND customer_id = %d AND seatn = %d",flight_id,curUser.getId(),seat_no);
+        	Statement stmt = con.createStatement();
+        	stmt.executeUpdate(deletequery);
+        	userFlights.remove(index);
+			String updatequery = "UPDATE Flight SET total_seats = total_seats + 1 WHERE flight_id = " + flight_id;
+			stmt.executeUpdate(updatequery);
+        	Map<String, Object> canceled = new HashMap<String, Object>() {{
+                put("canceled",1);
+                put("flights",userFlights);
+    		}};
+    		stmt.close();
+    		Map<String, Object> userinfo = new HashMap<String, Object>() {{
+                put("cust",curUser);
+                put("flights",userFlights);
+    		}};
+            ctx.render("/sub/customerinfo.vm",userinfo);
+        });
+        
+        
+        
     }
     
     private static int getHerokuAssignedPort() {
