@@ -32,8 +32,8 @@ public class Main {
         Javalin app = Javalin.create(config -> {
             config.addStaticFiles("/sub", Location.CLASSPATH);}
         	//config.addStaticFiles(staticFiles -> {staticFiles.directory = "/";});}
-        //).start(getHerokuAssignedPort()); //FOR HEROKU DEPLOYMENT
-        ).start(1013); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
+        ).start(getHerokuAssignedPort()); //FOR HEROKU DEPLOYMENT
+        //).start(1013); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
         
         //mysql connection
         //Class.forName("com.mysql.cj.jdbc.Driver");
@@ -42,6 +42,7 @@ public class Main {
         Connection con = DriverManager.getConnection(dbUrl);
         Statement stmt1 = con.createStatement();
         ResultSet rs1 = stmt1.executeQuery("SELECT 1");
+        ResultSet rs2 = stmt1.executeQuery("SELECT 1");
         //Connection con=DriverManager.getConnection(  			THIS IS THE LOCAL DATABASE CONNECTION
         //	"jdbc:mysql://localhost:3306/AirplaneRes","root","romepage");
         	
