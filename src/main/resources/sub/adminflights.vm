@@ -25,27 +25,27 @@
    <input type="submit" value="Search" />
  </form>
 
-  <ul>
-    #foreach($flight in $flights)
-      <li>
-        From $flight.getStart() to $flight.getDest()<br>
-        Departure day: $flight.getDate()<br>
-        Departure time: $flight.getTime()<br>
-        Seats Available: $flight.getSeat()<br>
-        Price: $flight.getPrice()<br>
-        <form method="post" action="/removeflight">
-          <label for="fid"></label>
-	  <input type="hidden" name="start" $flight.getStart() />
-	  <input type="hidden" name="dest" value=$flight.getDest() />
-	  <input type="hidden" name="date" value=$flight.getDate() />
-	  <input type="hidden" name="time" value=$flight.getTime() />
-	  <input type="hidden" name="price" value=$flight.getPrice() />
-          <input type="hidden" name="fid" value=$flight.getId() />
-	  <input type="submit" value="Remove this flight" />
-          <br>
-        </form>
-      </li>
-    #end
-  </ul>
+<ul>
+  #foreach($flight in $flights)
+    <li>
+      From $flight.getStart() to $flight.getDest()<br>
+      Departure day: $flight.getDate()<br>
+      Departure time: $flight.getTime()<br>
+      Seats Available: $flight.getSeat()<br>
+      Price: $flight.getPrice()<br>
+      <form method="post" action="/removeflight">
+        <label for="fid"></label>
+	<input type="hidden" name="start" $flight.getStart() />
+	<input type="hidden" name="dest" value=$flight.getDest() />
+	<input type="hidden" name="date" value=$flight.getDate() />
+	<input type="hidden" name="time" value=$flight.getTime() />
+	<input type="hidden" name="price" value=$flight.getPrice() />
+        <input type="hidden" name="fid" value=$flight.getId() />
+	<input type="submit" value="Remove this flight" />
+        <br>
+      </form>
+    </li>
+  #end
+</ul>
 
 <p>Back to <a href='/admin'>homepage</a></p>
