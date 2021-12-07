@@ -32,8 +32,8 @@ public class Main {
         Javalin app = Javalin.create(config -> {
             config.addStaticFiles("/sub", Location.CLASSPATH);}
         	//config.addStaticFiles(staticFiles -> {staticFiles.directory = "/";});}
-        //).start(getHerokuAssignedPort()); //FOR HEROKU DEPLOYMENT
-        ).start(1008); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
+        ).start(getHerokuAssignedPort()); //FOR HEROKU DEPLOYMENT
+        //).start(1010); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
         
         //mysql connection
         //Class.forName("com.mysql.cj.jdbc.Driver");
