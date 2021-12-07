@@ -32,7 +32,6 @@ Here is a list of the current customer's flights:
 	<input type="hidden" name="seat" value=$flight.getSeat() />
         <input type="hidden" name="fid" value=$flight.getId() />
 	<input type="hidden" name="index" value=$foreach.count />
-	<input type="hidden" name="cid" value=$cust.getId() />
 	<input type="submit" value="Cancel this flight" />
         <br>
       </form>
