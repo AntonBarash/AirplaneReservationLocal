@@ -5,12 +5,10 @@
   <input type="start" name="start" required/><br />
   <label for="destination">Enter a destination:</label>
   <input type="destination" name="destination" required/><br />
-  <label for="departuredate">Enter departure date:</label>
-  <input type="date" name="departuredate" required/><br />
-  <label for="departuretime">Enter departure time:</label>
-  <input type="time" name="departuretime" required/><br />
-  <label for="arrivaltime">Enter arrival time:</label>
-  <input type="time" name="arrivaltime" required/><br />
+  <label for="departuredate">Enter departure date (yyyy-MM-dd):</label>
+  <input type="departuredate" name="departuredate" required/><br />
+  <label for="departuretime">Enter departure time (HH:mm):</label>
+  <input type="departuretime" name="departuretime" required/><br />
   <label for="seats">Enter available seats:</label>
   <input type="seats" name="seats" required/><br />
   <label for="price">Enter price for flight:</label>
