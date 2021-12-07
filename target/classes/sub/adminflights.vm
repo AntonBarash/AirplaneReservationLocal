@@ -15,7 +15,7 @@
   <input type="number" name="price" required/><br />
   <input type="submit" value="Add flight" />
  </form>
- <br>
+<br>
 
  <h2>View current flights</h2>
 
@@ -24,9 +24,7 @@
    <input type="destination" name="destination" required/><br>
    <input type="submit" value="Search" />
  </form>
- <br>
 
-#if ($flights)
   <ul>
     #foreach($flight in $flights)
       <li>
@@ -50,6 +48,5 @@
       </li>
     #end
   </ul>
-#end
 
 <p>Back to <a href='/admin'>homepage</a></p>

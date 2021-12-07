@@ -33,7 +33,7 @@ public class Main {
             config.addStaticFiles("/sub", Location.CLASSPATH);}
         	//config.addStaticFiles(staticFiles -> {staticFiles.directory = "/";});}
         //).start(getHerokuAssignedPort()); //FOR HEROKU DEPLOYMENT
-        ).start(1053); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
+        ).start(1000); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
         
         //mysql connection
         //Class.forName("com.mysql.cj.jdbc.Driver");
@@ -355,38 +355,29 @@ public class Main {
         });
         
         app.post("/adminviewflights", ctx -> {
-        	String cemail = ctx.formParam("cemail");
-        	String custquery = "SELECT * FROM Customer WHERE email = '" + cemail + "'";
+        	String dest = ctx.formParam("destination");
+        	String flightsquery = "SELECT * FROM Flight WHERE destination_loc = '" + dest + "'";
         	Statement stmt = con.createStatement();
-        	ResultSet rs = stmt.executeQuery(custquery);
-        	rs.next();
-        	String fname = rs.getString("fname");
-			String lname = rs.getString("lname");
-			String pass = rs.getString("pass");
-			int contactn = rs.getInt("contactn");
-			int ccnum = rs.getInt("creditcardn");
-			int ccv = rs.getInt("ccv");
-			int exp = rs.getInt("exp");
-			int custid = rs.getInt("customer_id");
-			curUser = new User(fname, lname, contactn, ccnum, ccv, exp, cemail, pass, custid);
-			String flightquery = String.format("SELECT * FROM Books B, Flight F WHERE B.customer_id = %d AND B.flight_id = F.flight_id", custid);
-			rs = stmt.executeQuery(flightquery);
-			while (rs.next()) {
-				String s = rs.getString("departing_loc");
-				String dest = rs.getString("destination_loc");
+        	ResultSet rs = stmt.executeQuery(flightsquery);
+        	ArrayList<Flight> flights = new ArrayList<Flight>();
+        	while (rs.next()) {
+        		String s = rs.getString("departing_loc");
 				String date = rs.getString("date");
 				String time = rs.getString("time");
 				int id = rs.getInt("flight_id");
-				int sn = rs.getInt("seatn");
+				int sn = rs.getInt("total_seats");
 				int p = rs.getInt("price");
 				Flight f = new Flight(s, dest, date, time, sn, p, id);
-				userFlights.add(f);
-			}
-			Map<String, Object> userinfo = new HashMap<String, Object>() {{
-                put("cust",curUser);
-                put("flights",userFlights);
+				if (f.isValidDate()) {
+					flights.add(f);
+				}
+        	}
+        	Map<String, ArrayList<Flight>> allflights = new HashMap<String, ArrayList<Flight>>() {{
+                put("flights",flights);
     		}};
-            ctx.render("/sub/customerinfo.vm",userinfo);
+    		rs.close();
+    		stmt.close();
+            ctx.render("/sub/adminflights.vm",allflights);
         });
         
         /*

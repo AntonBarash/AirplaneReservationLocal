@@ -33,8 +33,8 @@ CREATE TABLE Books(
 customer_id INTEGER,
 flight_id INTEGER,
 seatn INTEGER,
-FOREIGN KEY (customer_id) REFERENCES Customer(customer_id),
-FOREIGN KEY (flight_id) REFERENCES Flight(flight_id),
+FOREIGN KEY (customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE,
+FOREIGN KEY (flight_id) REFERENCES Flight(flight_id) ON DELETE CASCADE,
 PRIMARY KEY(customer_id, flight_id, seatn));
 
 INSERT INTO Flight(time,destination_loc,departing_loc,date,total_seats,price) values('01:01', 'Boston', 'Chicago', '2022-01-01', 5, 1);
