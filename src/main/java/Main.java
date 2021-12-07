@@ -33,7 +33,7 @@ public class Main {
             config.addStaticFiles("/sub", Location.CLASSPATH);}
         	//config.addStaticFiles(staticFiles -> {staticFiles.directory = "/";});}
         //).start(getHerokuAssignedPort()); //FOR HEROKU DEPLOYMENT
-        ).start(1007); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
+        ).start(1008); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
         
         //mysql connection
         //Class.forName("com.mysql.cj.jdbc.Driver");
@@ -222,33 +222,8 @@ public class Main {
         });
         
         app.post("/searchcustomer", ctx -> {
-        	String cemail = ctx.formParam("cemail");
-        	String custquery = "SELECT * FROM Customer WHERE email = '" + cemail + "'";
-        	Statement stmt = con.createStatement();
-        	ResultSet rs = stmt.executeQuery(custquery);
-        	rs.next();
-        	String fname = rs.getString("fname");
-			String lname = rs.getString("lname");
-			String pass = rs.getString("pass");
-			int contactn = rs.getInt("contactn");
-			int ccnum = rs.getInt("creditcardn");
-			int ccv = rs.getInt("ccv");
-			int exp = rs.getInt("exp");
-			int custid = rs.getInt("customer_id");
-			curUser = new User(fname, lname, contactn, ccnum, ccv, exp, cemail, pass, custid);
-			String flightquery = String.format("SELECT * FROM Books B, Flight F WHERE B.customer_id = %d AND B.flight_id = F.flight_id", custid);
-			rs = stmt.executeQuery(flightquery);
-			while (rs.next()) {
-				String s = rs.getString("departing_loc");
-				String dest = rs.getString("destination_loc");
-				String date = rs.getString("date");
-				String time = rs.getString("time");
-				int id = rs.getInt("flight_id");
-				int sn = rs.getInt("seatn");
-				int p = rs.getInt("price");
-				Flight f = new Flight(s, dest, date, time, sn, p, id);
-				userFlights.add(f);
-			}
+        	curUser = Admin.searchCustomer(ctx, con);
+        	userFlights = Admin.searchCustomerFlights(ctx, con, curUser);
 			Map<String, Object> userinfo = new HashMap<String, Object>() {{
                 put("cust",curUser);
                 put("flights",userFlights);
@@ -257,23 +232,12 @@ public class Main {
         });
         
         app.post("/admincancel", ctx -> {
-        	int flight_id = Integer.parseInt(ctx.formParam("fid"));
-        	int seat_no = Integer.parseInt(ctx.formParam("seat"));
-        	int index = Integer.parseInt(ctx.formParam("index")) - 1;
-        	String deletequery = String.format("DELETE FROM Books WHERE flight_id = %d AND customer_id = %d AND seatn = %d",flight_id,curUser.getId(),seat_no);
-        	Statement stmt = con.createStatement();
-        	stmt.executeUpdate(deletequery);
-        	userFlights.remove(index);
-			String updatequery = "UPDATE Flight SET total_seats = total_seats + 1 WHERE flight_id = " + flight_id;
-			stmt.executeUpdate(updatequery);
-        	Map<String, Object> canceled = new HashMap<String, Object>() {{
-                put("canceled",1);
-                put("flights",userFlights);
-    		}};
-    		stmt.close();
+        	int index = Admin.cancelFlight(ctx, con, curUser);
+        	userFlights.remove(index);    		
     		Map<String, Object> userinfo = new HashMap<String, Object>() {{
                 put("cust",curUser);
                 put("flights",userFlights);
+                put("canceled",1);
     		}};
             ctx.render("/sub/customerinfo.vm",userinfo);
         });
@@ -283,53 +247,23 @@ public class Main {
         });
         
         app.post("/makenewflight", ctx -> {
-			String start = ctx.formParam("start");
-			String dest = ctx.formParam("destination");
-			String date = ctx.formParam("departuredate");
-			String time = ctx.formParam("departuretime");
-			int seats = Integer.parseInt(ctx.formParam("seats"));
-			int price = Integer.parseInt(ctx.formParam("price"));
-			Statement stmt = con.createStatement();
-			String insertquery = String.format("INSERT INTO Flight(time,destination_loc,departing_loc,date,total_seats,price) values('%s', '%s', '%s', '%s', %d, %d)",time,dest,start,date,seats,price);	
-			stmt.executeUpdate(insertquery);
+			Admin.addFlight(ctx, con);
             ctx.render("/sub/adminflights.vm");
         });
         
         app.post("/adminviewflights", ctx -> {
-        	String dest = ctx.formParam("destination");
-        	String flightsquery = "SELECT * FROM Flight WHERE destination_loc = '" + dest + "'";
-        	Statement stmt = con.createStatement();
-        	ResultSet rs = stmt.executeQuery(flightsquery);
-        	ArrayList<Flight> flights = new ArrayList<Flight>();
-        	while (rs.next()) {
-        		String s = rs.getString("departing_loc");
-				String date = rs.getString("date");
-				String time = rs.getString("time");
-				int id = rs.getInt("flight_id");
-				int sn = rs.getInt("total_seats");
-				int p = rs.getInt("price");
-				Flight f = new Flight(s, dest, date, time, sn, p, id);
-				if (f.isValidDate()) {
-					flights.add(f);
-				}
-        	}
+        	ArrayList<Flight> flights = Admin.viewFlights(ctx, con);
         	Map<String, ArrayList<Flight>> allflights = new HashMap<String, ArrayList<Flight>>() {{
                 put("flights",flights);
     		}};
-    		rs.close();
-    		stmt.close();
             ctx.render("/sub/adminflights.vm",allflights);
         });
         
         app.post("/removeflight", ctx -> {
-        	int flight_id = Integer.parseInt(ctx.formParam("fid"));
-        	String deletequery = "DELETE FROM Flight WHERE flight_id = " + flight_id;
-        	Statement stmt = con.createStatement();
-        	stmt.executeUpdate(deletequery);
+        	Admin.removeFlight(ctx,con);
         	Map<String, Integer> removed = new HashMap<String, Integer>() {{
                 put("removed",1);
     		}};
-    		stmt.close();
             ctx.render("/sub/adminflights.vm",removed);
         });
         
