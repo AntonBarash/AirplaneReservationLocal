@@ -1,3 +1,7 @@
+#if($canceled)
+  <h1>Successfully canceled flight!</h1>
+#end
+
 <h2>Customer Information</h2>
 <form method="post" action="/searchcustomer">
 	<label for="cemail">Search by customer email:</label>
