@@ -8,7 +8,7 @@
   <label for="departuredate">Enter departure date (yyyy-MM-dd):</label>
   <input type="departuredate" name="departuredate" maxlength="10" pattern="[0-9]{4}-[0-9]{2}-[0-3][0-9]" title = "yyyy-MM-dd" required/><br />
   <label for="departuretime">Enter departure time (HH:mm):</label>
-  <input type="departuretime" name="departuretime" maxlength="5" pattern="[0-9]{2}:[0-9]{2}" title = "HH:mm" required/><br />
+  <input type="departuretime" name="departuretime" maxlength="5" pattern="[0-9]{2}:[0-5][0-9]" title = "HH:mm" required/><br />
   <label for="seats">Enter available seats:</label>
   <input type="number" name="seats" required/><br />
   <label for="price">Enter price for flight: $</label>
