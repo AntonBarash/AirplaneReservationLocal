@@ -10,8 +10,8 @@ public class User {
 	//user class attributes
 	private String fname;
 	private String lname;
-	private int contactn;
-	private int creditcardnum;
+	private String contactn;
+	private String creditcardnum;
 	private int cvv;
 	private int exp;
 	private String email;
@@ -24,8 +24,8 @@ public class User {
 		this.loggedIn = false;
 		this.fname = null;
 		this.lname = null;
-		this.contactn = 0;
-		this.creditcardnum = 0;
+		this.contactn = null;
+		this.creditcardnum = null;
 		this.cvv = 0;
 		this.exp = 0;
 		this.email = null;
@@ -34,7 +34,7 @@ public class User {
 	}
 	
 	//constructor with input, for when a user logs in or registers
-	public User(String first, String last, int contact, int ccnum, int crv, int exp, String emai, String pas, int id) {
+	public User(String first, String last, String contact, String ccnum, int crv, int exp, String emai, String pas, int id) {
 		this.loggedIn = true;
 		this.fname = first;
 		this.lname = last;
@@ -53,12 +53,12 @@ public class User {
 	}
 
 	//getter method for retrieving someones contact number
-    public int getContact() {
+    public String getContact() {
         return contactn;
     }
 
     //getter method for retrieving someones credit card number
-    public int getCCN() {
+    public String getCCN() {
         return creditcardnum;
     }
 

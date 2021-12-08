@@ -13,8 +13,8 @@ public class Main {
     	//initialization of javalin app
         Javalin app = Javalin.create(config -> {
             config.addStaticFiles("/sub", Location.CLASSPATH);}
-        //).start(getHerokuAssignedPort()); //FOR HEROKU DEPLOYMENT
-        ).start(1000); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
+        ).start(getHerokuAssignedPort()); //FOR HEROKU DEPLOYMENT
+        //).start(1000); //FOR LOCAL TESTING: INCREASE PORT NUMBER EACH TEST, SINCE OLD ONE IS ALREADY TAKEN WHEN RAN
         
         //MYSQL CONNECTIONS:
         
@@ -53,12 +53,12 @@ public class Main {
         	else {
         		String fname = ctx.formParam("fname");
         		String lname = ctx.formParam("lname");
-        		int contactn = Integer.parseInt(ctx.formParam("contactn"));
-        		int ccnum = Integer.parseInt(ctx.formParam("creditcard"));
+        		String contactn = ctx.formParam("contactn");
+        		String ccnum = ctx.formParam("creditcard");
         		int ccv = Integer.parseInt(ctx.formParam("cvv"));
         		int exp = Integer.parseInt(ctx.formParam("exp"));
         		String pass = ctx.formParam("password");
-        		String inputquery = String.format("INSERT INTO Customer(fname,lname,contactn,creditcardn,ccv,exp,email,pass,account_type) values('%s','%s',%d,%d,%d,%d,'%s','%s',%d)", 
+        		String inputquery = String.format("INSERT INTO Customer(fname,lname,contactn,creditcardn,ccv,exp,email,pass,account_type) values('%s','%s','%s','%s',%d,%d,'%s','%s',%d)", 
                 				fname,lname,contactn,ccnum,ccv,exp,email,pass,0);
                 stmt.executeUpdate(inputquery);
                 rs = stmt.executeQuery("SELECT customer_id FROM Customer WHERE email = '" + email + "'");
@@ -94,8 +94,8 @@ public class Main {
             		if (accounttype == 0) { //if account type is 0, you go to user page since 0 is for user accounts
             			String fname = rs.getString("fname");
             			String lname = rs.getString("lname");
-            			int contactn = rs.getInt("contactn");
-            			int ccnum = rs.getInt("creditcardn");
+            			String contactn = rs.getString("contactn");
+            			String ccnum = rs.getString("creditcardn");
             			int ccv = rs.getInt("ccv");
             			int exp = rs.getInt("exp");
             			int custid = rs.getInt("customer_id");

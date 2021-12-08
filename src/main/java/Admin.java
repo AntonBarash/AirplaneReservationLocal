@@ -103,8 +103,8 @@ public class Admin {
     	String fname = rs.getString("fname");
 		String lname = rs.getString("lname");
 		String pass = rs.getString("pass");
-		int contactn = rs.getInt("contactn");
-		int ccnum = rs.getInt("creditcardn");
+		String contactn = rs.getString("contactn");
+		String ccnum = rs.getString("creditcardn");
 		int ccv = rs.getInt("ccv");
 		int exp = rs.getInt("exp");
 		int custid = rs.getInt("customer_id");
